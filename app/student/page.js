@@ -1,8 +1,5 @@
-"use client";
-
 import Link from "next/link";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import { useAuth } from "@/lib/AuthContext";
+import { requireUser } from "@/lib/auth";
 
 const WATCHING = [
   { title: "Egyptian Baladi — Foundations", instructor: "Amara Nour", slug: "egyptian-baladi-foundations", progress: 64, status: "In Progress" },
@@ -10,18 +7,12 @@ const WATCHING = [
   { title: "Arm & Hand Styling Essentials", instructor: "Farah Idris", slug: "arm-hand-styling-essentials", progress: 100, status: "Completed" },
 ];
 
-export default function StudentDashboard() {
-  return (
-    <ProtectedRoute requiredRole="student">
-      <DashboardContent />
-    </ProtectedRoute>
-  );
-}
-
-function DashboardContent() {
-  const { session } = useAuth();
-  // ProtectedRoute already guarantees session exists here, so we can read it directly.
-  const firstName = session.name.split(" ")[0];
+export default async function StudentDashboard() {
+  // requireUser redirects to /login (or the right dashboard for the wrong
+  // role) before returning, so anything after this line is only reached
+  // by an actual logged-in student.
+  const user = await requireUser("student");
+  const firstName = user.name.split(" ")[0];
 
   return (
     <main className="grid md:grid-cols-[220px_1fr] flex-1">
@@ -31,7 +22,7 @@ function DashboardContent() {
             {firstName[0]}
           </div>
           <div>
-            <strong className="block text-ivory text-sm font-display">{session.name}</strong>
+            <strong className="block text-ivory text-sm font-display">{user.name}</strong>
             <span className="text-[0.65rem] uppercase tracking-widest">Student</span>
           </div>
         </div>
