@@ -4,9 +4,11 @@ import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Button from "@/components/Button";
 import { loginAction, registerAction } from "@/lib/actions/auth";
+import { applyAsInstructorAction } from "@/lib/actions/instructorApplications";
 
 const LOGIN_ERRORS = {
   1: "That email and password don’t match an account.",
+  pending: "Your instructor application is still under review — we’ll email you once it’s approved.",
 };
 
 const SIGNUP_ERRORS = {
@@ -37,6 +39,7 @@ function LoginForm() {
   }
   const redirectTo = searchParams.get("redirect") ?? "";
   const wasRedirected = searchParams.get("redirected") === "1";
+  const wasApplied = searchParams.get("applied") === "1";
   const errorCode = searchParams.get("error");
 
   const [role, setRole] = useState(initialRole);
@@ -49,7 +52,10 @@ function LoginForm() {
   // displays them, instead of choosing between them inline.
   let heading = "Welcome back, dancer";
   let subtext = "Log in to continue your courses.";
-  if (mode === "signup") {
+  if (mode === "signup" && role === "instructor") {
+    heading = "Apply to teach";
+    subtext = "Tell us a bit about you — we'll review your application.";
+  } else if (mode === "signup") {
     heading = "Create your account";
     subtext = "Sign up to start learning.";
   } else if (role === "instructor") {
@@ -113,7 +119,7 @@ function LoginForm() {
         <p className="text-sm text-ink/60 mb-6">{subtext}</p>
 
         {mode === "signup" && role === "instructor" ? (
-          <InstructorSignupNotice />
+          wasApplied ? <InstructorApplicationReceived /> : <InstructorSignupForm />
         ) : mode === "signup" ? (
           <SignupForm redirectTo={redirectTo} />
         ) : (
@@ -211,16 +217,64 @@ function SignupForm({ redirectTo }) {
   );
 }
 
-function InstructorSignupNotice() {
+function InstructorSignupForm() {
   return (
-    <div>
+    <>
       <p className="text-sm text-ink/70 bg-gold/15 border border-gold/40 px-3 py-3 mb-5">
         Instructor accounts go through a short review before they&rsquo;re activated.
       </p>
-      <Button href="/become-an-instructor" variant="primary" className="w-full">
-        Apply to Teach
-      </Button>
-    </div>
+      <form action={applyAsInstructorAction}>
+        <Field label="Name">
+          <input
+            type="text"
+            name="name"
+            required
+            placeholder="Your name"
+            className="w-full border border-burgundy/20 px-3 py-3 text-sm"
+          />
+        </Field>
+        <Field label="Email">
+          <input
+            type="email"
+            name="email"
+            required
+            placeholder="you@example.com"
+            className="w-full border border-burgundy/20 px-3 py-3 text-sm"
+          />
+        </Field>
+        <Field label="Password">
+          <input
+            type="password"
+            name="password"
+            required
+            minLength={8}
+            placeholder="••••••••"
+            className="w-full border border-burgundy/20 px-3 py-3 text-sm"
+          />
+        </Field>
+        <Field label="Confirm Password">
+          <input
+            type="password"
+            name="confirmPassword"
+            required
+            minLength={8}
+            placeholder="••••••••"
+            className="w-full border border-burgundy/20 px-3 py-3 text-sm"
+          />
+        </Field>
+        <Button type="submit" variant="primary" className="w-full mt-2">
+          Submit Application
+        </Button>
+      </form>
+    </>
+  );
+}
+
+function InstructorApplicationReceived() {
+  return (
+    <p className="text-sm text-ink/70 bg-gold/15 border border-gold/40 px-3 py-4">
+      Thanks — your application has been received. We&rsquo;ll email you once it&rsquo;s been reviewed.
+    </p>
   );
 }
 
