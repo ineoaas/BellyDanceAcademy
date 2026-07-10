@@ -1,25 +1,13 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { useAuth } from "@/lib/AuthContext";
+import { getCurrentUser, DASHBOARD_BY_ROLE } from "@/lib/auth";
+import { logoutAction } from "@/lib/actions/auth";
 
-export default function Navbar() {
-  const { session, logout, ready } = useAuth();
-
-  // While ready is false we don't know yet if someone is logged in,
-  // so we treat them as logged out until the check finishes.
-  const isLoggedIn = ready && session !== null;
-
-  let dashboardHref = "/student";
-  if (isLoggedIn && session.role === "instructor") {
-    dashboardHref = "/instructor";
-  }
-
-  let firstName = "";
-  if (isLoggedIn) {
-    firstName = session.name.split(" ")[0];
-  }
+export default async function Navbar() {
+  const user = await getCurrentUser();
+  const isLoggedIn = user !== null;
+  const dashboardHref = isLoggedIn ? DASHBOARD_BY_ROLE[user.role] ?? "/student" : "/student";
+  const firstName = isLoggedIn ? user.name.split(" ")[0] : "";
 
   return (
     <nav className="sticky top-0 z-50 bg-burgundy-dark border-b-2 border-gold">
@@ -51,12 +39,14 @@ export default function Navbar() {
               <span className="text-xs text-gold-pale/70 hidden sm:inline">
                 Hi, {firstName}
               </span>
-              <button
-                onClick={logout}
-                className="text-xs uppercase tracking-widest text-gold-pale/70 hover:text-gold-pale border border-gold px-4 py-2"
-              >
-                Log Out
-              </button>
+              <form action={logoutAction}>
+                <button
+                  type="submit"
+                  className="text-xs uppercase tracking-widest text-gold-pale/70 hover:text-gold-pale border border-gold px-4 py-2"
+                >
+                  Log Out
+                </button>
+              </form>
             </>
           ) : (
             <>

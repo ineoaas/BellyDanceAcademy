@@ -1,126 +1,15 @@
-"use client";
-
-import { use, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { notFound } from "next/navigation";
-import Button from "@/components/Button";
 import { getCourseBySlug } from "@/lib/mockData";
-import { useAuth } from "@/lib/AuthContext";
+import { getCurrentUser } from "@/lib/auth";
+import CourseDetailView from "@/components/CourseDetailView";
 
-const TABS = ["curriculum", "about", "reviews"];
-
-export default function CoursePage({ params }) {
-  const { slug } = use(params);
+export default async function CoursePage({ params }) {
+  const { slug } = await params;
   const course = getCourseBySlug(slug);
-  const [tab, setTab] = useState("curriculum");
-  const { session } = useAuth();
-  const router = useRouter();
-
   if (!course) return notFound();
 
-  function handleBuy() {
-    // Only students purchase courses. Send everyone else to the right place.
-    if (session && session.role === "student") {
-      router.push("/student");
-    } else {
-      router.push(`/login?as=student&redirect=/courses/${course.slug}`);
-    }
-  }
+  const user = await getCurrentUser();
+  const isLoggedInStudent = user?.role === "student";
 
-  return (
-    <main className="flex-1 flex flex-col">
-      <section className="bg-burgundy-deep text-ivory flex-1">
-        <div className="max-w-5xl mx-auto px-6 pt-10 pb-12">
-          <div className="text-xs text-gold-pale/55 mb-4">
-            <Link href="/courses" className="hover:text-gold-light">Browse Courses</Link> / {course.level} /{" "}
-            <span className="text-gold-light">{course.title}</span>
-          </div>
-
-          <div className="grid md:grid-cols-[1.6fr_1fr] gap-9">
-            <div>
-              <span className="text-xs tracking-[0.2em] uppercase text-gold font-medium">
-                {course.level} · {course.title.split(" ")[0]}
-              </span>
-              <h1 className="font-display text-2xl md:text-3xl mt-3">{course.title}</h1>
-              <p className="text-gold-pale/80 mt-3 max-w-md">{course.desc}</p>
-
-              <div className="flex gap-5 flex-wrap text-sm text-gold-pale/80 mt-4">
-                <span><strong className="text-gold-light">{course.rating}</strong> {course.ratingValue} · {course.reviewCount} reviews</span>
-                <span><strong className="text-gold-light">{course.lessons}</strong> lessons</span>
-                <span><strong className="text-gold-light">{course.duration}</strong> total</span>
-              </div>
-
-              <div className="flex gap-6 border-b border-gold/30 mt-7 mb-5">
-                {TABS.map((t) => (
-                  <button
-                    key={t}
-                    onClick={() => setTab(t)}
-                    className={`pb-2 text-xs uppercase tracking-widest border-b-2 ${
-                      tab === t ? "text-gold-light border-gold-light" : "text-gold-pale/55 border-transparent"
-                    }`}
-                  >
-                    {t}
-                  </button>
-                ))}
-              </div>
-
-              {tab === "curriculum" && (
-                <div>
-                  {course.curriculum.map((lesson, i) => (
-                    <div key={lesson.title} className="flex justify-between py-3 border-b border-dotted border-gold/30 text-sm">
-                      <span>
-                        <span className="font-display italic text-gold-light mr-2">
-                          {i + 1}.
-                        </span>
-                        {lesson.title}
-                      </span>
-                      <span className="text-xs text-gold-pale/60">
-                        {lesson.time}{lesson.preview ? " · Preview" : ""}
-                      </span>
-                    </div>
-                  ))}
-                  <div className="pt-3 text-sm text-gold-pale/50">
-                    + {course.lessons - course.curriculum.length} more lessons
-                  </div>
-                </div>
-              )}
-              {tab === "about" && <p className="text-gold-pale/80">{course.about}</p>}
-              {tab === "reviews" && (
-                <div className="space-y-3">
-                  <p className="text-gold-pale/80">
-                    <strong className="text-gold-light">★★★★★</strong> &ldquo;Exactly the detail I needed at my level.&rdquo; — a student
-                  </p>
-                  <p className="text-gold-pale/80">
-                    <strong className="text-gold-light">★★★★★</strong> &ldquo;Best foundations course I&apos;ve taken, online or in-studio.&rdquo; — a student
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <aside>
-              <div className="bg-ivory text-ink p-6 relative">
-                <div className="aspect-[16/10] bg-burgundy-deep mb-5 flex items-center justify-center">
-                  <span className="font-display text-5xl text-gold/50">{course.letter}</span>
-                </div>
-                <div className="flex items-baseline gap-2 mb-5 font-display">
-                  <strong className="text-3xl text-burgundy">${course.price}</strong>
-                  <s className="text-ink/50">${course.originalPrice}</s>
-                </div>
-                <Button onClick={handleBuy} variant="primary" className="w-full">
-                  Buy Now
-                </Button>
-                <ul className="mt-5 space-y-2 text-sm text-ink/65">
-                  <li>— Lifetime access, watch anytime</li>
-                  <li>— {course.lessons} HD video lessons</li>
-                  <li>— Downloadable practice notes</li>
-                  <li>— Access on web, iOS &amp; Android</li>
-                </ul>
-              </div>
-            </aside>
-          </div>
-        </div>
-      </section>
-    </main>
-  );
+  return <CourseDetailView course={course} isLoggedInStudent={isLoggedInStudent} />;
 }
