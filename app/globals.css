@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #F4E9D6;
+  color: #241014;
+}
+
+/* Plain circular frame for the logo and avatar medallions — no extra decorative ring,
+   the artwork itself already carries the seal border. */
+.medallion {
+  border-radius: 9999px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.medallion img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* dotted divider used between sections, evokes a manuscript rule without being a stock line */
+.rule-dotted {
+  background-image: radial-gradient(circle, #B8912F 1.2px, transparent 1.4px);
+  background-size: 14px 1px;
+  background-repeat: repeat-x;
+  height: 1px;
+  opacity: 0.55;
+}
+
+/* links in the top navigation bar */
+.nav-link {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(244, 233, 214, 0.68);
+}
+
+.nav-link:hover {
+  color: #eaD9a8;
+}
