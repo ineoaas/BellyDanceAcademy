@@ -1,18 +1,13 @@
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
-
-const WATCHING = [
-  { title: "Egyptian Baladi — Foundations", instructor: "Amara Nour", slug: "egyptian-baladi-foundations", progress: 64, status: "In Progress" },
-  { title: "Veil Work & Stage Presence", instructor: "Leyla Marín", slug: "veil-work-stage-presence", progress: 22, status: "In Progress" },
-  { title: "Arm & Hand Styling Essentials", instructor: "Farah Idris", slug: "arm-hand-styling-essentials", progress: 100, status: "Completed" },
-];
+import { listEnrollmentsForStudent } from "@/lib/purchases";
 
 export default async function StudentDashboard() {
-  // requireUser redirects to /login (or the right dashboard for the wrong
-  // role) before returning, so anything after this line is only reached
-  // by an actual logged-in student.
+  /* requireUser redirects away non-students, so past this line we're
+     always a logged-in student. */
   const user = await requireUser("student");
   const firstName = user.name.split(" ")[0];
+  const enrollments = listEnrollmentsForStudent(user.id);
 
   return (
     <main className="grid md:grid-cols-[220px_1fr] flex-1">
@@ -45,56 +40,54 @@ export default async function StudentDashboard() {
         </div>
 
         <div className="bg-ivory border border-gold/30 p-6">
-          <h3 className="font-display text-lg mb-4">Continue Watching</h3>
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-[0.65rem] uppercase tracking-widest text-ink/55 border-b border-gold/30">
-                <th className="py-2">Course</th>
-                <th className="py-2">Instructor</th>
-                <th className="py-2">Progress</th>
-                <th className="py-2"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {WATCHING.map((c) => (
-                <tr key={c.slug} className="border-b border-dotted border-gold/30 last:border-none">
-                  <td className="py-3 font-medium">{c.title}</td>
-                  <td className="py-3">{c.instructor}</td>
-                  <td className="py-3 w-48">
-                    <span className={"inline-block px-2.5 py-1 text-[0.6rem] uppercase font-semibold " + getProgressClasses(c.status)}>
-                      {c.status}
-                    </span>
-                    <div className="h-1 bg-burgundy/10 mt-1.5">
-                      <div className="h-full bg-gold" style={{ width: `${c.progress}%` }} />
-                    </div>
-                  </td>
-                  <td className="py-3 text-right">
-                    <Link href={`/courses/${c.slug}`} className="text-xs uppercase tracking-widest border border-gold px-3 py-2">
-                      {getResumeLabel(c.status)}
-                    </Link>
-                  </td>
+          <h3 className="font-display text-lg mb-4">My Courses</h3>
+          {enrollments.length === 0 ? (
+            <p className="text-sm text-ink/55">
+              You haven&apos;t bought a course yet.{" "}
+              <Link href="/courses" className="underline">
+                Browse the catalog
+              </Link>{" "}
+              to get started.
+            </p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-[0.65rem] uppercase tracking-widest text-ink/55 border-b border-gold/30">
+                  <th className="py-2">Course</th>
+                  <th className="py-2">Instructor</th>
+                  <th className="py-2">Purchased</th>
+                  <th className="py-2"></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {enrollments.map((enrollment) => (
+                  <tr key={enrollment.id} className="border-b border-dotted border-gold/30 last:border-none">
+                    <td className="py-3 font-medium">{enrollment.title}</td>
+                    <td className="py-3">{enrollment.instructor_name}</td>
+                    <td className="py-3">{formatDate(enrollment.created_at)}</td>
+                    <td className="py-3 text-right">
+                      <Link
+                        href={`/courses/${enrollment.slug}`}
+                        className="text-xs uppercase tracking-widest border border-gold px-3 py-2"
+                      >
+                        Start Course
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </main>
   );
 }
 
-function getProgressClasses(status) {
-  if (status === "Completed") {
-    return "bg-emerald-800/10 text-emerald-800";
-  }
-  return "bg-gold/20 text-[#7A5D1D]";
-}
-
-function getResumeLabel(status) {
-  if (status === "Completed") {
-    return "Rewatch";
-  }
-  return "Resume";
+function formatDate(sqliteDatetime) {
+  /* SQLite's datetime('now') has no timezone marker; force UTC parsing. */
+  const date = new Date(sqliteDatetime.replace(" ", "T") + "Z");
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
 function SideLink({ href, active, children }) {
