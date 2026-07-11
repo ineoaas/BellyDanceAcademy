@@ -1,15 +1,35 @@
 import { notFound } from "next/navigation";
-import { getCourseBySlug } from "@/lib/mockData";
+import { findCourseBySlug, getLessonsForCourse, formatCourseForDisplay } from "@/lib/courses";
+import { hasPurchased } from "@/lib/purchases";
 import { getCurrentUser } from "@/lib/auth";
 import CourseDetailView from "@/components/CourseDetailView";
 
-export default async function CoursePage({ params }) {
+export default async function CoursePage({ params, searchParams }) {
   const { slug } = await params;
-  const course = getCourseBySlug(slug);
-  if (!course) return notFound();
+  const search = await searchParams;
+
+  const course = findCourseBySlug(slug);
+  if (!course || course.status !== "live") return notFound();
 
   const user = await getCurrentUser();
-  const isLoggedInStudent = user?.role === "student";
+  const alreadyPurchased = user?.role === "student" ? hasPurchased(user.id, course.id) : false;
 
-  return <CourseDetailView course={course} isLoggedInStudent={isLoggedInStudent} />;
+  const lessons = getLessonsForCourse(course.id);
+  const displayCourse = {
+    ...formatCourseForDisplay(course),
+    curriculum: lessons.map((lesson) => ({
+      title: lesson.title,
+      time: lesson.duration_label,
+      preview: Boolean(lesson.is_preview),
+    })),
+  };
+
+  return (
+    <CourseDetailView
+      course={displayCourse}
+      alreadyPurchased={alreadyPurchased}
+      purchaseError={search?.error === "unavailable"}
+      checkoutCancelled={search?.checkout === "cancelled"}
+    />
+  );
 }

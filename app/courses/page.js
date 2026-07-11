@@ -1,9 +1,11 @@
 import CourseCard from "@/components/CourseCard";
-import { COURSES } from "@/lib/mockData";
+import { listLiveCourses, formatCourseForDisplay } from "@/lib/courses";
 
 export const metadata = { title: "Browse Courses — Belly Dance Academy" };
 
 export default function CoursesPage() {
+  const courses = listLiveCourses().map(formatCourseForDisplay);
+
   return (
     <main className="flex-1">
       <section className="bg-burgundy-deep text-ivory">
@@ -19,7 +21,7 @@ export default function CoursesPage() {
       <section className="py-12">
         <div className="max-w-5xl mx-auto px-6">
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {COURSES.map((course) => (
+            {courses.map((course) => (
               <CourseCard key={course.slug} course={course} />
             ))}
           </div>

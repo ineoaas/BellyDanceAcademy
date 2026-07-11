@@ -2,23 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import Button from "@/components/Button";
+import { purchaseCourseAction } from "@/lib/actions/purchase";
 
 const TABS = ["curriculum", "about", "reviews"];
 
-export default function CourseDetailView({ course, isLoggedInStudent }) {
+export default function CourseDetailView({ course, alreadyPurchased, purchaseError, checkoutCancelled }) {
   const [tab, setTab] = useState("curriculum");
-  const router = useRouter();
-
-  function handleBuy() {
-    // Only students purchase courses. Send everyone else to the right place.
-    if (isLoggedInStudent) {
-      router.push("/student");
-    } else {
-      router.push(`/login?as=student&redirect=/courses/${course.slug}`);
-    }
-  }
 
   return (
     <main className="flex-1 flex flex-col">
@@ -97,11 +87,32 @@ export default function CourseDetailView({ course, isLoggedInStudent }) {
                 </div>
                 <div className="flex items-baseline gap-2 mb-5 font-display">
                   <strong className="text-3xl text-burgundy">${course.price}</strong>
-                  <s className="text-ink/50">${course.originalPrice}</s>
+                  {course.originalPrice && <s className="text-ink/50">${course.originalPrice}</s>}
                 </div>
-                <Button onClick={handleBuy} variant="primary" className="w-full">
-                  Buy Now
-                </Button>
+
+                {alreadyPurchased ? (
+                  <Button href="/student" variant="primary" className="w-full">
+                    Go to Your Course
+                  </Button>
+                ) : (
+                  <form action={purchaseCourseAction}>
+                    <input type="hidden" name="slug" value={course.slug} />
+                    <Button type="submit" variant="primary" className="w-full">
+                      Buy Now
+                    </Button>
+                  </form>
+                )}
+
+                {purchaseError && (
+                  <p className="text-xs text-burgundy mt-3">
+                    This course isn&apos;t available for purchase yet — the instructor is still setting
+                    up payouts.
+                  </p>
+                )}
+                {checkoutCancelled && (
+                  <p className="text-xs text-ink/50 mt-3">Checkout cancelled — no charge was made.</p>
+                )}
+
                 <ul className="mt-5 space-y-2 text-sm text-ink/65">
                   <li>— Lifetime access, watch anytime</li>
                   <li>— {course.lessons} HD video lessons</li>
