@@ -20,7 +20,9 @@ export default function CourseCard({ course }) {
         <h3 className="font-display text-lg mb-1">{course.title}</h3>
         <p className="text-sm text-ink/60 flex-1">{course.desc}</p>
         <div className="flex justify-between text-xs text-ink/60 mt-4 pt-3 border-t border-dotted border-gold/50">
-          <span className="text-gold tracking-wide">{course.rating}</span>
+          <span className="text-gold tracking-wide">
+            {course.reviewCount > 0 ? course.rating : "No reviews yet"}
+          </span>
           <span>{course.lessons} lessons</span>
           <span>{course.duration}</span>
         </div>
