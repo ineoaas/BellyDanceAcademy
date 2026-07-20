@@ -10,6 +10,9 @@
     "db:seed": "node scripts/seed.js"
   },
   "dependencies": {
+    "@mux/mux-node": "^14.1.1",
+    "@mux/mux-player-react": "^3.13.0",
+    "@mux/upchunk": "^3.5.0",
     "better-sqlite3": "^12.11.1",
     "next": "^16.2.10",
     "react": "^18.3.1",
