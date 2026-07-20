@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { listEnrollmentsForStudent } from "@/lib/purchases";
+import { getLessonsForCourse } from "@/lib/courses";
 
 export default async function StudentDashboard() {
   /* requireUser redirects away non-students, so past this line we're
@@ -22,9 +23,10 @@ export default async function StudentDashboard() {
           </div>
         </div>
         <nav className="space-y-1 text-sm">
-          <SideLink href="#" active>My Courses</SideLink>
+          <SideLink href="/student" active>My Courses</SideLink>
           <SideLink href="/courses">Browse Courses</SideLink>
-          <SideLink href="#">Wishlist</SideLink>
+          <SideLink href="/student/wishlist">Wishlist</SideLink>
+          <SideLink href="/student/settings">Profile Settings</SideLink>
         </nav>
       </aside>
 
@@ -55,26 +57,43 @@ export default async function StudentDashboard() {
                 <tr className="text-left text-[0.65rem] uppercase tracking-widest text-ink/55 border-b border-gold/30">
                   <th className="py-2">Course</th>
                   <th className="py-2">Instructor</th>
-                  <th className="py-2">Purchased</th>
+                  <th className="py-2">Progress</th>
                   <th className="py-2"></th>
                 </tr>
               </thead>
               <tbody>
-                {enrollments.map((enrollment) => (
-                  <tr key={enrollment.id} className="border-b border-dotted border-gold/30 last:border-none">
-                    <td className="py-3 font-medium">{enrollment.title}</td>
-                    <td className="py-3">{enrollment.instructor_name}</td>
-                    <td className="py-3">{formatDate(enrollment.created_at)}</td>
-                    <td className="py-3 text-right">
-                      <Link
-                        href={`/courses/${enrollment.slug}`}
-                        className="text-xs uppercase tracking-widest border border-gold px-3 py-2"
-                      >
-                        Start Course
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
+                {enrollments.map((enrollment) => {
+                  // Resume where they left off; if they've never started,
+                  // send them to the first lesson instead.
+                  const targetLessonId =
+                    enrollment.last_lesson_id ?? getLessonsForCourse(enrollment.course_id)[0]?.id;
+                  const started = Boolean(enrollment.last_lesson_id);
+
+                  return (
+                    <tr key={enrollment.id} className="border-b border-dotted border-gold/30 last:border-none">
+                      <td className="py-3 font-medium">{enrollment.title}</td>
+                      <td className="py-3">{enrollment.instructor_name}</td>
+                      <td className="py-3 w-48">
+                        <span className="text-xs text-ink/55">{enrollment.progress_percent}%</span>
+                        <div className="h-1 bg-burgundy/10 mt-1.5">
+                          <div className="h-full bg-gold" style={{ width: `${enrollment.progress_percent}%` }} />
+                        </div>
+                      </td>
+                      <td className="py-3 text-right">
+                        {targetLessonId ? (
+                          <Link
+                            href={`/courses/${enrollment.slug}/watch/${targetLessonId}`}
+                            className="text-xs uppercase tracking-widest border border-gold px-3 py-2"
+                          >
+                            {started ? "Continue" : "Start Course"}
+                          </Link>
+                        ) : (
+                          <span className="text-xs text-ink/40">No lessons yet</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
@@ -82,12 +101,6 @@ export default async function StudentDashboard() {
       </div>
     </main>
   );
-}
-
-function formatDate(sqliteDatetime) {
-  /* SQLite's datetime('now') has no timezone marker; force UTC parsing. */
-  const date = new Date(sqliteDatetime.replace(" ", "T") + "Z");
-  return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
 function SideLink({ href, active, children }) {
