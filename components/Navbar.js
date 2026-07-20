@@ -27,6 +27,8 @@ export default async function Navbar() {
         <div className="flex items-center gap-5 flex-wrap">
           <Link href="/" className="nav-link">Home</Link>
           <Link href="/courses" className="nav-link">Browse Courses</Link>
+          <Link href="/instructors" className="nav-link">Instructors</Link>
+          <Link href="/about" className="nav-link">About</Link>
 
           {isLoggedIn && (
             <Link href={dashboardHref} className="nav-link">My Dashboard</Link>
@@ -57,7 +59,7 @@ export default async function Navbar() {
                 Log In
               </Link>
               <Link
-                href="/login?as=instructor"
+                href="/become-an-instructor"
                 className="text-xs uppercase tracking-widest bg-gold text-burgundy-deep px-4 py-2 font-medium hidden sm:inline-block"
               >
                 Become an Instructor

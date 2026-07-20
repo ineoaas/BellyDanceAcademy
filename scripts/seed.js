@@ -1,6 +1,7 @@
 const { createUser, findUserByEmail } = require("../lib/users");
+const { upsertProfile } = require("../lib/instructorProfiles");
 const db = require("../lib/db");
-const { COURSES } = require("../lib/mockData");
+const { COURSES, INSTRUCTORS } = require("../lib/mockData");
 
 const DEMO_ACCOUNTS = [
   { name: "Nadia Karim", email: "student@example.com", password: "student123", role: "student" },
@@ -20,6 +21,27 @@ const INSTRUCTOR_EMAIL_BY_NAME = {
   "Farah Idris": "farah@example.com",
 };
 
+// Short, genuine-sounding bio copy per instructor — not fabricated stats,
+// just the kind of profile text a real instructor would fill in themselves.
+const INSTRUCTOR_BIOS = {
+  "Amara Nour": {
+    bio: "Cairo-trained in Baladi and Saidi, with over a decade performing on Egypt's wedding and hotel-show circuit before moving to teaching full time.",
+    credentials: "10+ years performing, Cairo",
+  },
+  "Leyla Marín": {
+    bio: "A veil-work specialist blending Spanish theatrical training with classical Oriental technique, now teaching dancers preparing for their first solo.",
+    credentials: "Conservatory-trained, Barcelona",
+  },
+  "Dalia Rostam": {
+    bio: "Known for sharp, percussive drum solo work built on years of live tabla accompaniment across Istanbul's performance venues.",
+    credentials: "Istanbul performance circuit",
+  },
+  "Farah Idris": {
+    bio: "A finishing-school approach to arm and hand styling — the small technical details that separate trained movement from improvised.",
+    credentials: "Beirut studio instructor",
+  },
+};
+
 for (const account of DEMO_ACCOUNTS) {
   if (findUserByEmail(account.email)) {
     console.log(`Skipping ${account.email} — already exists`);
@@ -29,13 +51,34 @@ for (const account of DEMO_ACCOUNTS) {
   console.log(`Created ${account.role}: ${account.email} / ${account.password}`);
 }
 
+for (const mockInstructor of INSTRUCTORS) {
+  const email = INSTRUCTOR_EMAIL_BY_NAME[mockInstructor.name];
+  const user = email && findUserByEmail(email);
+  if (!user) continue;
+
+  const details = INSTRUCTOR_BIOS[mockInstructor.name] ?? { bio: "", credentials: "" };
+  upsertProfile(user.id, { name: user.name, city: mockInstructor.city, ...details });
+}
+console.log("Seeded instructor profiles.");
+
+// FR-2.4's style filter needs something to filter by — mockData.js
+// predates the `style` column, so it's mapped here by slug instead.
+const STYLE_BY_SLUG = {
+  "egyptian-baladi-foundations": "Baladi",
+  "veil-work-stage-presence": "Veil Work",
+  "drum-solo-choreography": "Drum Solo",
+  "arm-hand-styling-essentials": "Styling",
+  "saidi-cane-dance": "Saidi",
+  "five-minute-solo": "Choreography",
+};
+
 const insertCourse = db.prepare(`
   INSERT INTO courses
     (slug, title, instructor_id, level, price_cents, original_price_cents,
-     description, about, duration_label, lesson_count, letter,
+     description, about, duration_label, lesson_count, letter, style,
      rating_label, rating_value, review_count, status)
   VALUES (@slug, @title, @instructorId, @level, @priceCents, @originalPriceCents,
-          @description, @about, @durationLabel, @lessonCount, @letter,
+          @description, @about, @durationLabel, @lessonCount, @letter, @style,
           @ratingLabel, @ratingValue, @reviewCount, 'live')
 `);
 
@@ -70,6 +113,7 @@ for (const course of COURSES) {
     durationLabel: course.duration,
     lessonCount: course.lessons,
     letter: course.letter,
+    style: STYLE_BY_SLUG[course.slug] ?? "",
     ratingLabel: course.rating,
     ratingValue: course.ratingValue,
     reviewCount: course.reviewCount,
