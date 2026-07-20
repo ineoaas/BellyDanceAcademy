@@ -35,10 +35,9 @@ export default async function InstructorDashboard({ searchParams }) {
           </div>
         </div>
         <nav className="space-y-1 text-sm">
-          <SideLink href="#" active>Overview</SideLink>
-          <SideLink href="#">My Courses</SideLink>
-          <SideLink href="#">Upload New Course</SideLink>
-          <SideLink href="#">Payouts</SideLink>
+          <SideLink href="/instructor" active>Overview</SideLink>
+          <SideLink href="/instructor/courses/new">Create New Course</SideLink>
+          <SideLink href="/instructor/profile">Edit Profile</SideLink>
         </nav>
       </aside>
 
@@ -108,6 +107,7 @@ export default async function InstructorDashboard({ searchParams }) {
                   <th className="py-2">Status</th>
                   <th className="py-2">Students</th>
                   <th className="py-2">Revenue</th>
+                  <th className="py-2"></th>
                 </tr>
               </thead>
               <tbody>
@@ -128,6 +128,14 @@ export default async function InstructorDashboard({ searchParams }) {
                     </td>
                     <td className="py-3">{course.student_count}</td>
                     <td className="py-3">{formatDollars(course.revenue_cents)}</td>
+                    <td className="py-3 text-right">
+                      <Link
+                        href={`/instructor/courses/${course.id}`}
+                        className="text-xs uppercase tracking-widest border border-gold px-3 py-2"
+                      >
+                        Manage Lessons
+                      </Link>
+                    </td>
                   </tr>
                 ))}
               </tbody>
