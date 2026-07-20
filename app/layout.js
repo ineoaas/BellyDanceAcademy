@@ -1,6 +1,7 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AnnouncementBanner from "@/components/AnnouncementBanner";
 
 export const metadata = {
   title: "Belly Dance Academy",
@@ -19,6 +20,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className="font-body flex flex-col min-h-screen">
         <Navbar />
+        <AnnouncementBanner />
         <div className="flex-1 flex flex-col">{children}</div>
         <Footer />
       </body>
