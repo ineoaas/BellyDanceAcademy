@@ -11,3 +11,6 @@ app:
     signing-key-id: ""
     signing-private-key: ""
     webhook-secret: ""
+  # Tests sign in many times from one address; RateLimitIT turns this back on.
+  rate-limit:
+    enabled: false

@@ -59,6 +59,11 @@ app:
   frontend-url: ${APP_URL:http://localhost:3000}
   admin-email: ${ADMIN_EMAIL:info@thebellydancecompany.ae}
   currency: usd
+  # Creates the first admin on startup while no admin exists (see AdminBootstrap).
+  bootstrap-admin:
+    name: ${BOOTSTRAP_ADMIN_NAME:}
+    email: ${BOOTSTRAP_ADMIN_EMAIL:}
+    password: ${BOOTSTRAP_ADMIN_PASSWORD:}
   auth:
     session-ttl: 30d
     password-reset-ttl: 1h
@@ -83,6 +88,20 @@ app:
 logging:
   level:
     com.bellydanceacademy: INFO
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+app:
+  auth:
+    secure-cookie: true
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
 
 ---
 spring:
