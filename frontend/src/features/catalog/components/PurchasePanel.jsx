@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { Alert, Button, ErrorAlert } from "@/components/ui";
 import { useSession } from "@/features/auth/hooks";
 import { useSetWishlisted } from "@/features/student/hooks";
@@ -79,6 +79,12 @@ export function PurchasePanel({ course, viewer, notice }) {
         <li>— Resume right where you stopped</li>
         <li>— Watch on any device</li>
       </ul>
+      <p className="mt-4 text-xs text-ink/50">
+        One-time purchase.{" "}
+        <Link to="/refund-policy" className="underline">
+          Refund Policy
+        </Link>
+      </p>
     </div>
   );
 }

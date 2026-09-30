@@ -9,6 +9,12 @@ const LINKS = [
   { to: "/contact", label: "Contact" },
 ];
 
+const LEGAL_LINKS = [
+  { to: "/terms", label: "Terms of Service" },
+  { to: "/privacy", label: "Privacy Policy" },
+  { to: "/refund-policy", label: "Refund Policy" },
+];
+
 export function Footer() {
   return (
     <footer className="bg-burgundy-dark py-8 text-center text-xs tracking-wide text-gold-pale/60">
@@ -16,6 +22,13 @@ export function Footer() {
       <nav className="mb-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[0.65rem] tracking-widest uppercase">
         {LINKS.map((link) => (
           <Link key={link.to} to={link.to} className="hover:text-gold-pale">
+            {link.label}
+          </Link>
+        ))}
+      </nav>
+      <nav aria-label="Legal" className="mb-4 flex flex-wrap justify-center gap-x-5 gap-y-1 text-[0.65rem]">
+        {LEGAL_LINKS.map((link) => (
+          <Link key={link.to} to={link.to} className="hover:text-gold-pale hover:underline">
             {link.label}
           </Link>
         ))}

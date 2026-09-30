@@ -15,7 +15,7 @@ const FAQS = [
   },
   {
     q: "How do refunds work?",
-    a: "Reach out through the Contact page with your purchase details and we'll take a look. We handle these by hand rather than an automatic policy, since every situation is a little different.",
+    a: "Contact us within 14 days of purchase with your account email and the course name. We review each request individually — see the Refund Policy page for the details.",
   },
   {
     q: "How do instructors get paid?",

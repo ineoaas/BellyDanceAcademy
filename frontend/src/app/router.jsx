@@ -23,6 +23,9 @@ export const router = createBrowserRouter([
       { path: "courses/:slug/watch/:lessonId", lazy: page(() => import("@/features/learning/pages/WatchLessonPage")) },
       { path: "instructors", lazy: page(() => import("@/features/instructors/pages/InstructorsPage")) },
       { path: "instructors/:slug", lazy: page(() => import("@/features/instructors/pages/InstructorProfilePage")) },
+      { path: "terms", lazy: page(() => import("@/features/legal/pages/TermsPage")) },
+      { path: "privacy", lazy: page(() => import("@/features/legal/pages/PrivacyPage")) },
+      { path: "refund-policy", lazy: page(() => import("@/features/legal/pages/RefundPolicyPage")) },
 
       // Auth
       { path: "login", lazy: page(() => import("@/features/auth/pages/LoginPage")) },
