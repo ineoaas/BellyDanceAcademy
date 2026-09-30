@@ -6,6 +6,7 @@ import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
 import com.stripe.model.Balance;
+import com.stripe.model.Charge;
 import com.stripe.model.Event;
 import com.stripe.model.Payout;
 import com.stripe.model.StripeObject;
@@ -24,6 +25,7 @@ class StripePaymentGateway implements PaymentGateway {
 
     private static final String SERVICE_NAME = "Payments";
     private static final String CHECKOUT_COMPLETED = "checkout.session.completed";
+    private static final String CHARGE_REFUNDED = "charge.refunded";
 
     private final StripeProperties properties;
     private volatile StripeClient client;
@@ -107,23 +109,38 @@ class StripePaymentGateway implements PaymentGateway {
     }
 
     @Override
-    public Optional<CompletedCheckout> parseCompletedCheckout(String payload, String signatureHeader) {
+    public Optional<PaymentEvent> parseWebhookEvent(String payload, String signatureHeader) {
         Event event;
         try {
             event = Webhook.constructEvent(payload, signatureHeader, properties.webhookSecret());
         } catch (SignatureVerificationException | IllegalArgumentException | NullPointerException e) {
             throw new InvalidWebhookSignatureException(e);
         }
-        if (!CHECKOUT_COMPLETED.equals(event.getType())) {
-            return Optional.empty();
-        }
-        StripeObject object = event.getDataObjectDeserializer().getObject()
-                .orElseGet(() -> deserializeUnsafe(event));
+        return switch (event.getType()) {
+            case CHECKOUT_COMPLETED -> toCompletedCheckout(dataObject(event));
+            case CHARGE_REFUNDED -> toPaymentRefunded(dataObject(event));
+            default -> Optional.empty();
+        };
+    }
+
+    private static Optional<PaymentEvent> toCompletedCheckout(StripeObject object) {
         if (!(object instanceof Session session) || !"paid".equals(session.getPaymentStatus())) {
             return Optional.empty();
         }
         return Optional.of(new CompletedCheckout(session.getId(), session.getPaymentIntent(),
                 session.getAmountTotal(), session.getCurrency(), session.getMetadata()));
+    }
+
+    private static Optional<PaymentEvent> toPaymentRefunded(StripeObject object) {
+        if (!(object instanceof Charge charge) || charge.getPaymentIntent() == null) {
+            return Optional.empty();
+        }
+        return Optional.of(new PaymentRefunded(charge.getPaymentIntent(), charge.getAmountRefunded(),
+                Boolean.TRUE.equals(charge.getRefunded())));
+    }
+
+    private static StripeObject dataObject(Event event) {
+        return event.getDataObjectDeserializer().getObject().orElseGet(() -> deserializeUnsafe(event));
     }
 
     /** Falls back when the event's API version differs from the SDK's pinned one. */

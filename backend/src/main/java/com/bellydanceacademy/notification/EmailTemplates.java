@@ -46,6 +46,16 @@ final class EmailTemplates {
                 escape(dashboardUrl)));
     }
 
+    static EmailMessage refundConfirmation(String to, String studentName, String courseTitle, int amountCents,
+                                           String currency) {
+        return new EmailMessage(to, "Your refund for " + courseTitle, """
+                <p>Hi %s,</p>
+                <p>We've refunded %s for <strong>%s</strong>. It should reach your original payment method
+                within 5–10 business days, depending on your bank.</p>
+                <p>The course has been removed from your dashboard.</p>
+                """.formatted(escape(studentName), formatMoney(amountCents, currency), escape(courseTitle)));
+    }
+
     static String formatMoney(int amountCents, String currency) {
         String amount = BigDecimal.valueOf(amountCents, 2).toPlainString();
         return "usd".equalsIgnoreCase(currency) ? "$" + amount : amount + " " + currency.toUpperCase(Locale.ROOT);

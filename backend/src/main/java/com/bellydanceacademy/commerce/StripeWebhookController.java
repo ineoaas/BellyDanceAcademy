@@ -31,7 +31,7 @@ class StripeWebhookController {
     ResponseEntity<?> receive(@RequestBody String payload,
                               @RequestHeader(name = "Stripe-Signature", required = false) String signature) {
         try {
-            paymentGateway.parseCompletedCheckout(payload, signature).ifPresent(purchaseService::recordCompletedCheckout);
+            paymentGateway.parseWebhookEvent(payload, signature).ifPresent(this::handle);
         } catch (PaymentGateway.InvalidWebhookSignatureException e) {
             return ResponseEntity.badRequest().body(ProblemDetails.of(HttpStatus.BAD_REQUEST, "INVALID_SIGNATURE",
                     "Invalid webhook signature."));
@@ -40,5 +40,12 @@ class StripeWebhookController {
             log.info("Duplicate Stripe checkout delivery ignored");
         }
         return ResponseEntity.ok().build();
+    }
+
+    private void handle(PaymentGateway.PaymentEvent event) {
+        switch (event) {
+            case PaymentGateway.CompletedCheckout checkout -> purchaseService.recordCompletedCheckout(checkout);
+            case PaymentGateway.PaymentRefunded refund -> purchaseService.recordRefund(refund);
+        }
     }
 }

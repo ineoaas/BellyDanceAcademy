@@ -1,6 +1,7 @@
 package com.bellydanceacademy.commerce;
 
 import com.bellydanceacademy.commerce.stripe.PaymentGateway.CompletedCheckout;
+import com.bellydanceacademy.commerce.stripe.PaymentGateway.PaymentRefunded;
 import com.bellydanceacademy.course.Course;
 import com.bellydanceacademy.course.CourseRepository;
 import com.bellydanceacademy.learning.EnrollmentService;
@@ -15,9 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Turns a paid checkout into a purchase + enrollment. The payment webhook
- * is the source of truth for "did this go through", never the browser
- * redirect back from checkout.
+ * Turns a paid checkout into a purchase + enrollment, and a refund back into
+ * a revoked enrollment. The payment webhook is the source of truth for
+ * "did this go through", never the browser redirect back from checkout.
  */
 @Service
 class PurchaseService {
@@ -79,5 +80,36 @@ class PurchaseService {
         events.publishEvent(new PurchaseCompleted(purchase.getId(), student.get().getName(), student.get().getEmail(),
                 course.get().getTitle(), amountCents, purchase.getCurrency()));
         return Optional.of(purchase);
+    }
+
+    /**
+     * A full refund marks the purchase refunded and revokes the access it
+     * paid for, in one transaction. Earnings and revenue only count paid
+     * purchases, so they adjust by themselves. Partial refunds leave the
+     * purchase untouched. Idempotent, like checkout recording.
+     */
+    @Transactional
+    public void recordRefund(PaymentRefunded refund) {
+        Optional<Purchase> found = purchases.findByStripePaymentIntentId(refund.paymentIntentId());
+        if (found.isEmpty()) {
+            log.warn("Refund for unknown payment {} ignored", refund.paymentIntentId());
+            return;
+        }
+        Purchase purchase = found.get();
+        if (!refund.fullyRefunded()) {
+            log.warn("Partial refund of {} cents on purchase {}; access unchanged",
+                    refund.amountRefundedCents(), purchase.getId());
+            return;
+        }
+        if (!purchase.markRefunded()) {
+            return;
+        }
+        enrollments.revokeForPurchase(purchase.getId());
+        log.info("Purchase {} refunded; access to course {} revoked", purchase.getId(), purchase.getCourseId());
+
+        User student = users.findById(purchase.getStudentId()).orElseThrow();
+        Course course = courses.findById(purchase.getCourseId()).orElseThrow();
+        events.publishEvent(new PurchaseRefunded(purchase.getId(), student.getName(), student.getEmail(),
+                course.getTitle(), purchase.getAmountCents(), purchase.getCurrency()));
     }
 }

@@ -11,6 +11,8 @@ interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
     boolean existsByStudentIdAndCourseId(Long studentId, Long courseId);
 
+    void deleteByPurchaseId(Long purchaseId);
+
     @Query("select count(distinct e.studentId) from Enrollment e")
     long countDistinctStudents();
 

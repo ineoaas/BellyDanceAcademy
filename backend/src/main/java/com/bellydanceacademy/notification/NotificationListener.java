@@ -3,6 +3,7 @@ package com.bellydanceacademy.notification;
 import com.bellydanceacademy.auth.InstructorApplicationSubmitted;
 import com.bellydanceacademy.auth.PasswordResetRequested;
 import com.bellydanceacademy.commerce.PurchaseCompleted;
+import com.bellydanceacademy.commerce.PurchaseRefunded;
 import com.bellydanceacademy.config.AppProperties;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -50,6 +51,13 @@ class NotificationListener {
     void on(PurchaseCompleted event) {
         send(EmailTemplates.purchaseReceipt(event.studentEmail(), event.studentName(), event.courseTitle(),
                 event.amountCents(), event.currency(), appProperties.frontendLink("/student")), event);
+    }
+
+    @Async
+    @TransactionalEventListener
+    void on(PurchaseRefunded event) {
+        send(EmailTemplates.refundConfirmation(event.studentEmail(), event.studentName(), event.courseTitle(),
+                event.amountCents(), event.currency()), event);
     }
 
     private void send(EmailMessage message, Object cause) {

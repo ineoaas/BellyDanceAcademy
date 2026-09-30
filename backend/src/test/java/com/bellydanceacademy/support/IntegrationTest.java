@@ -66,14 +66,29 @@ public abstract class IntegrationTest {
     /**
      * Simulates a paid checkout arriving through the payment webhook — the
      * only way an enrollment is ever created.
+     *
+     * @return the payment intent id, for refunding it later
      */
-    protected void completePurchase(TestData.Account student, Course course, int commissionCents) throws Exception {
+    protected String completePurchase(TestData.Account student, Course course, int commissionCents) throws Exception {
         String payload = "evt_" + TestData.unique();
-        when(paymentGateway.parseCompletedCheckout(eq(payload), anyString())).thenReturn(Optional.of(
-                new PaymentGateway.CompletedCheckout("cs_" + payload, "pi_" + payload, course.getPriceCents(), "usd",
-                        Map.of("courseId", course.getId().toString(),
-                                "studentId", student.id().toString(),
-                                "commissionCents", Integer.toString(commissionCents)))));
+        String paymentIntentId = "pi_" + payload;
+        deliverWebhook(payload, new PaymentGateway.CompletedCheckout("cs_" + payload, paymentIntentId,
+                course.getPriceCents(), "usd",
+                Map.of("courseId", course.getId().toString(),
+                        "studentId", student.id().toString(),
+                        "commissionCents", Integer.toString(commissionCents))));
+        return paymentIntentId;
+    }
+
+    /** Simulates a refund arriving through the payment webhook. */
+    protected void refundPurchase(String paymentIntentId, long amountRefundedCents, boolean fullyRefunded)
+            throws Exception {
+        deliverWebhook("evt_" + TestData.unique(),
+                new PaymentGateway.PaymentRefunded(paymentIntentId, amountRefundedCents, fullyRefunded));
+    }
+
+    protected void deliverWebhook(String payload, PaymentGateway.PaymentEvent event) throws Exception {
+        when(paymentGateway.parseWebhookEvent(eq(payload), anyString())).thenReturn(Optional.of(event));
         mvc.perform(post("/api/webhooks/stripe").content(payload).header("Stripe-Signature", "t=1,v1=sig"))
                 .andExpect(status().isOk());
     }

@@ -26,12 +26,12 @@ public interface PaymentGateway {
     PayoutResult createPayout(String accountId, long amountCents, String currency);
 
     /**
-     * Verifies a webhook's signature and extracts a paid checkout, if that's
-     * what the event is.
+     * Verifies a webhook's signature and extracts the event, if it's one the
+     * marketplace acts on.
      *
      * @throws InvalidWebhookSignatureException if the signature doesn't verify
      */
-    Optional<CompletedCheckout> parseCompletedCheckout(String payload, String signatureHeader);
+    Optional<PaymentEvent> parseWebhookEvent(String payload, String signatureHeader);
 
     record CheckoutRequest(
             String productName,
@@ -48,8 +48,22 @@ public interface PaymentGateway {
     record PayoutResult(String id, String status) {
     }
 
+    /** A provider event the marketplace reacts to. */
+    sealed interface PaymentEvent permits CompletedCheckout, PaymentRefunded {
+    }
+
+    /** A checkout session that has been paid. */
     record CompletedCheckout(String sessionId, String paymentIntentId, long amountTotalCents, String currency,
-                             Map<String, String> metadata) {
+                             Map<String, String> metadata) implements PaymentEvent {
+    }
+
+    /**
+     * Money was returned on a payment.
+     *
+     * @param fullyRefunded false for a partial refund, which leaves the purchase in place
+     */
+    record PaymentRefunded(String paymentIntentId, long amountRefundedCents, boolean fullyRefunded)
+            implements PaymentEvent {
     }
 
     class InvalidWebhookSignatureException extends RuntimeException {

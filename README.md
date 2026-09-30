@@ -58,7 +58,8 @@ automatic HTTPS. Only Caddy's ports 80/443 are exposed.
 4. Sign in as the bootstrap admin, change the password, then remove
    `BOOTSTRAP_ADMIN_PASSWORD` from `.env`.
 5. Register the webhooks: `https://<domain>/api/webhooks/stripe` in Stripe
-   and `https://<domain>/api/webhooks/mux` in Mux.
+   (events `checkout.session.completed` and `charge.refunded`) and
+   `https://<domain>/api/webhooks/mux` in Mux.
 6. Schedule `deploy/backup-db.sh` (nightly cron) and copy `backups/` off the server.
 
 The `prod` profile enables `Secure` cookies and turns off the API docs.
@@ -112,6 +113,10 @@ Key decisions:
   and snapshotted on each purchase.
 - **The payment webhook is the source of truth.** It's idempotent: redelivered
   events are no-ops, and the purchase and enrollment commit in one transaction.
+- **Refunds are issued in the Stripe Dashboard.** A full refund marks the
+  purchase refunded and removes the student's access; partial refunds are
+  only logged. Tick "reverse transfer" and "refund application fee" so the
+  instructor's share and the commission are returned too.
 - **Side effects run after commit.** Emails are sent after the transaction
   commits and off the request thread.
 - **Schema:** Flyway migrations, real foreign keys and CHECK constraints.

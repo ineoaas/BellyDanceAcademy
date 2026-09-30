@@ -24,6 +24,15 @@ public class EnrollmentService {
         enrollments.save(new Enrollment(studentId, courseId, purchaseId));
     }
 
+    /**
+     * Removes the enrollment a refunded purchase paid for, if any. Lesson
+     * progress is kept, so it's still there if the student buys again.
+     */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void revokeForPurchase(Long purchaseId) {
+        enrollments.deleteByPurchaseId(purchaseId);
+    }
+
     @Transactional(readOnly = true)
     public boolean isEnrolled(Long studentId, Long courseId) {
         return enrollments.existsByStudentIdAndCourseId(studentId, courseId);

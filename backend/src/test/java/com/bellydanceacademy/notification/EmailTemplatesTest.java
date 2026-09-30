@@ -23,4 +23,12 @@ class EmailTemplatesTest {
         assertThat(EmailTemplates.formatMoney(5900, "usd")).isEqualTo("$59.00");
         assertThat(EmailTemplates.formatMoney(1205, "eur")).isEqualTo("12.05 EUR");
     }
+
+    @Test
+    void refundConfirmationStatesTheAmountAndCourse() {
+        EmailMessage message = EmailTemplates.refundConfirmation("s@example.com", "Nadia", "Veil <Work>", 5900, "usd");
+
+        assertThat(message.subject()).isEqualTo("Your refund for Veil <Work>");
+        assertThat(message.html()).contains("$59.00").contains("Veil &lt;Work&gt;").contains("Nadia");
+    }
 }

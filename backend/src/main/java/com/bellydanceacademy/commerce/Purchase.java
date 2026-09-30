@@ -11,7 +11,10 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 import org.hibernate.annotations.CreationTimestamp;
 
-/** An immutable record of a completed payment, amounts snapshotted at checkout. */
+/**
+ * A completed payment, amounts snapshotted at checkout. Only the status
+ * changes afterwards, when the payment is refunded.
+ */
 @Entity
 @Table(name = "purchases")
 public class Purchase {
@@ -67,6 +70,15 @@ public class Purchase {
         this.status = PurchaseStatus.PAID;
     }
 
+    /** @return false if it was already refunded, so redelivered events are no-ops */
+    boolean markRefunded() {
+        if (status == PurchaseStatus.REFUNDED) {
+            return false;
+        }
+        status = PurchaseStatus.REFUNDED;
+        return true;
+    }
+
     public Long getId() {
         return id;
     }
@@ -85,5 +97,9 @@ public class Purchase {
 
     public String getCurrency() {
         return currency;
+    }
+
+    public PurchaseStatus getStatus() {
+        return status;
     }
 }

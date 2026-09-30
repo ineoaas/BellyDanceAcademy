@@ -26,11 +26,17 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.event.ApplicationEvents;
+import org.springframework.test.context.event.RecordApplicationEvents;
 
+@RecordApplicationEvents
 class PurchaseFlowIT extends IntegrationTest {
 
     @Autowired
     PurchaseRepository purchases;
+
+    @Autowired
+    ApplicationEvents events;
 
     @Test
     void checkoutQuotesTheCurrentCommissionSplit() throws Exception {
@@ -89,9 +95,9 @@ class PurchaseFlowIT extends IntegrationTest {
         TestData.Account student = data.student();
         Course course = data.liveCourse(data.payableInstructor(), 5900);
         String payload = "evt_" + TestData.unique();
-        when(paymentGateway.parseCompletedCheckout(eq(payload), anyString()))
-                .thenReturn(Optional.of(new PaymentGateway.CompletedCheckout("cs_" + payload, "pi", 5900, "usd",
-                        Map.of("courseId", course.getId().toString(), "studentId", student.id().toString(),
+        when(paymentGateway.parseWebhookEvent(eq(payload), anyString()))
+                .thenReturn(Optional.of(new PaymentGateway.CompletedCheckout("cs_" + payload, "pi_" + payload, 5900,
+                        "usd", Map.of("courseId", course.getId().toString(), "studentId", student.id().toString(),
                                 "commissionCents", "1180"))));
 
         long before = purchases.count();
@@ -103,8 +109,73 @@ class PurchaseFlowIT extends IntegrationTest {
     }
 
     @Test
+    void fullRefundRevokesAccessAndEarnings() throws Exception {
+        TestData.Account student = data.student();
+        TestData.Account instructor = data.payableInstructor();
+        Course course = data.liveCourse(instructor, 5900);
+        List<Lesson> lessons = data.lessons(course, 2);
+        String paymentIntentId = completePurchase(student, course, 1180);
+        Cookie session = login(student);
+
+        refundPurchase(paymentIntentId, 5900, true);
+        refundPurchase(paymentIntentId, 5900, true); // redelivery is a no-op
+
+        Purchase purchase = purchases.findByStripePaymentIntentId(paymentIntentId).orElseThrow();
+        assertThat(purchase.getStatus()).isEqualTo(PurchaseStatus.REFUNDED);
+        assertThat(events.stream(PurchaseRefunded.class).filter(e -> e.purchaseId().equals(purchase.getId())))
+                .hasSize(1);
+        mvc.perform(get("/api/me/enrollments").cookie(session))
+                .andExpect(jsonPath("$.length()").value(0));
+        mvc.perform(get("/api/courses/{slug}/lessons/{id}/watch", course.getSlug(), lessons.get(1).getId()).cookie(session))
+                .andExpect(status().isForbidden());
+        assertThat(purchases.findCourseSalesForInstructor(instructor.id()))
+                .singleElement()
+                .satisfies(sales -> {
+                    assertThat(sales.studentCount()).isZero();
+                    assertThat(sales.revenueCents()).isZero();
+                });
+
+        // The student can buy the course again.
+        completePurchase(student, course, 1180);
+        mvc.perform(get("/api/me/enrollments").cookie(session))
+                .andExpect(jsonPath("$.length()").value(1));
+    }
+
+    @Test
+    void partialRefundKeepsAccess() throws Exception {
+        TestData.Account student = data.student();
+        Course course = data.liveCourse(data.payableInstructor(), 5900);
+        String paymentIntentId = completePurchase(student, course, 1180);
+
+        refundPurchase(paymentIntentId, 1000, false);
+
+        assertThat(purchases.findByStripePaymentIntentId(paymentIntentId).orElseThrow().getStatus())
+                .isEqualTo(PurchaseStatus.PAID);
+        mvc.perform(get("/api/me/enrollments").cookie(login(student)))
+                .andExpect(jsonPath("$.length()").value(1));
+    }
+
+    @Test
+    void refundingADuplicatePaymentKeepsTheOriginalAccess() throws Exception {
+        TestData.Account student = data.student();
+        Course course = data.liveCourse(data.payableInstructor(), 5900);
+        completePurchase(student, course, 1180);
+        String duplicate = completePurchase(student, course, 1180);
+
+        refundPurchase(duplicate, 5900, true);
+
+        mvc.perform(get("/api/me/enrollments").cookie(login(student)))
+                .andExpect(jsonPath("$.length()").value(1));
+    }
+
+    @Test
+    void refundForAnUnknownPaymentIsIgnored() throws Exception {
+        refundPurchase("pi_unknown_" + TestData.unique(), 5900, true);
+    }
+
+    @Test
     void invalidWebhookSignatureIsRejected() throws Exception {
-        when(paymentGateway.parseCompletedCheckout(anyString(), any()))
+        when(paymentGateway.parseWebhookEvent(anyString(), any()))
                 .thenThrow(new PaymentGateway.InvalidWebhookSignatureException(new RuntimeException()));
 
         mvc.perform(post("/api/webhooks/stripe").content("{}").header("Stripe-Signature", "forged"))

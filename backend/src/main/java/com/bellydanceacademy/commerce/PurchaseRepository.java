@@ -9,6 +9,8 @@ interface PurchaseRepository extends JpaRepository<Purchase, Long> {
 
     boolean existsByStripeCheckoutSessionId(String stripeCheckoutSessionId);
 
+    Optional<Purchase> findByStripePaymentIntentId(String stripePaymentIntentId);
+
     Optional<Purchase> findFirstByStudentIdAndCourseIdAndStatus(Long studentId, Long courseId, PurchaseStatus status);
 
     @Query("select coalesce(sum(p.commissionCents), 0) from Purchase p where p.status = com.bellydanceacademy.commerce.PurchaseStatus.PAID")
