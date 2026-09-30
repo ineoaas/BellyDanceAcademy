@@ -1,0 +1,46 @@
+# Local development:   docker compose up -d db        (then run backend + frontend natively)
+# Full stack in Docker: docker compose --profile app up --build
+name: belly-dance-academy
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: bellydance
+      POSTGRES_USER: bellydance
+      POSTGRES_PASSWORD: bellydance
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bellydance -d bellydance"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    profiles: [app]
+    build: ./backend
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: jdbc:postgresql://db:5432/bellydance
+      DATABASE_USERNAME: bellydance
+      DATABASE_PASSWORD: bellydance
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    profiles: [app]
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

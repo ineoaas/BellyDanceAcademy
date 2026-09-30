@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+/* Brand tokens — every colour/font utility (bg-burgundy-deep, font-display, …) comes from here. */
+@theme {
+  --color-burgundy: #5c1120;
+  --color-burgundy-deep: #3c0a15;
+  --color-burgundy-dark: #240609;
+  --color-gold: #b8912f;
+  --color-gold-light: #d9b65c;
+  --color-gold-pale: #ead9a8;
+  --color-cream: #f4e9d6;
+  --color-ivory: #fbf5e9;
+  --color-ink: #241014;
+
+  --font-display: "Amiri", Georgia, serif;
+  --font-script: "Tangerine", cursive;
+  --font-body: "Jost", sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-cream font-body text-ink;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  /* Circular frame for the logo and avatar medallions. */
+  .medallion {
+    @apply flex shrink-0 items-center justify-center overflow-hidden rounded-full;
+  }
+
+  .nav-link {
+    @apply text-[0.72rem] tracking-[0.1em] text-gold-pale/70 uppercase hover:text-gold-pale;
+  }
+
+  .nav-link.active {
+    @apply text-gold-light;
+  }
+
+  .eyebrow {
+    @apply text-xs font-medium tracking-[0.24em] uppercase;
+  }
+}
