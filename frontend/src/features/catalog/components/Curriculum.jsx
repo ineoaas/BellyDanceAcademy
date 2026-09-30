@@ -24,7 +24,10 @@ export function Curriculum({ lessons }) {
       )}
       <ol>
         {lessons.map((lesson) => (
-          <li key={lesson.id} className="flex justify-between border-b border-dotted border-gold/30 py-3 text-sm">
+          <li
+            key={lesson.id}
+            className="flex justify-between border-b border-dotted border-gold/30 py-3 text-sm"
+          >
             <span>
               <span className="mr-2 font-display text-gold-light italic">{lesson.position}.</span>
               {lesson.title}

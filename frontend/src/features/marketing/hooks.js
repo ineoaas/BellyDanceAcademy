@@ -7,7 +7,11 @@ export function usePublicStats() {
 
 /** null until someone has left a review with a comment. */
 export function useFeaturedReview() {
-  return useQuery({ queryKey: ["reviews", "featured"], queryFn: () => http.get("/reviews/featured"), staleTime: 5 * 60_000 });
+  return useQuery({
+    queryKey: ["reviews", "featured"],
+    queryFn: () => http.get("/reviews/featured"),
+    staleTime: 5 * 60_000,
+  });
 }
 
 export function useSendContactMessage() {

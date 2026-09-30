@@ -19,8 +19,8 @@ export default function BecomeInstructorPage() {
               Turn your choreography into a course of its own
             </h1>
             <p className="mt-4 max-w-md text-gold-pale/80">
-              Upload your lessons, set your own price, and keep the majority of every sale. We handle checkout, video
-              hosting, and payouts automatically — you focus on teaching.
+              Upload your lessons, set your own price, and keep the majority of every sale. We handle
+              checkout, video hosting, and payouts automatically — you focus on teaching.
             </p>
             <ul className="mt-7 space-y-3 text-sm text-gold-pale/80">
               {PERKS.map((perk) => (

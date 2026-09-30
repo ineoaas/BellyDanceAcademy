@@ -10,7 +10,10 @@ export default function EditCoursePage() {
 
   return (
     <>
-      <Link to={`/instructor/courses/${courseId}`} className="text-xs tracking-widest text-burgundy/70 uppercase hover:text-burgundy">
+      <Link
+        to={`/instructor/courses/${courseId}`}
+        className="text-xs tracking-widest text-burgundy/70 uppercase hover:text-burgundy"
+      >
         ← Manage Lessons
       </Link>
       <AsyncContent query={course}>

@@ -1,4 +1,14 @@
-import { ActionButton, ActionsCell, AsyncContent, Cell, ErrorAlert, PageHeader, Panel, Row, Table } from "@/components/ui";
+import {
+  ActionButton,
+  ActionsCell,
+  AsyncContent,
+  Cell,
+  ErrorAlert,
+  PageHeader,
+  Panel,
+  Row,
+  Table,
+} from "@/components/ui";
 import { formatDate } from "@/lib/format";
 import { adminApi } from "../api";
 import { useAdminAction, useApplications } from "../hooks";
@@ -26,7 +36,11 @@ export default function ApplicationsPage() {
                     <Cell>{application.email}</Cell>
                     <Cell>{formatDate(application.appliedAt)}</Cell>
                     <ActionsCell>
-                      <ActionButton variant="solid" disabled={busy} onClick={() => approve.mutate(application.id)}>
+                      <ActionButton
+                        variant="solid"
+                        disabled={busy}
+                        onClick={() => approve.mutate(application.id)}
+                      >
                         Approve
                       </ActionButton>
                       <ActionButton disabled={busy} onClick={() => reject.mutate(application.id)}>

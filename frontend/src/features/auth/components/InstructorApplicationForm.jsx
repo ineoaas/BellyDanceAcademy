@@ -13,7 +13,8 @@ export function InstructorApplicationForm() {
   if (apply.isSuccess) {
     return (
       <Alert tone="info">
-        Thanks for applying — we&rsquo;ll review your application and email you once your account is activated.
+        Thanks for applying — we&rsquo;ll review your application and email you once your account is
+        activated.
       </Alert>
     );
   }

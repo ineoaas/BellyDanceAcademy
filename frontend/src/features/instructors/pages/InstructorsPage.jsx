@@ -25,7 +25,11 @@ export default function InstructorsPage() {
                       to={`/instructors/${instructor.slug}`}
                       className="border border-gold/35 bg-ivory p-6 text-center transition-all hover:-translate-y-1 hover:border-gold"
                     >
-                      <Medallion text={instructor.name} size="lg" className="mx-auto mb-4 border border-gold/50 bg-cream text-burgundy" />
+                      <Medallion
+                        text={instructor.name}
+                        size="lg"
+                        className="mx-auto mb-4 border border-gold/50 bg-cream text-burgundy"
+                      />
                       <strong className="block font-display text-lg">{instructor.name}</strong>
                       <span className="mb-2 block text-sm text-ink/60">{instructor.city}</span>
                       <span className="text-xs tracking-widest text-gold uppercase">

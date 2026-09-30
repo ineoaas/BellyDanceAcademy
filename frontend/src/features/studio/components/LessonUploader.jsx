@@ -41,7 +41,8 @@ export function LessonUploader({ courseId, lesson }) {
 
   if (progress !== null) return <span className="text-xs text-ink/55">Uploading… {progress}%</span>;
   if (lesson.videoStatus === "READY") return <span className="text-xs text-emerald-800">Video ready</span>;
-  if (lesson.videoStatus === "PROCESSING") return <span className="text-xs text-ink/55">Processing video…</span>;
+  if (lesson.videoStatus === "PROCESSING")
+    return <span className="text-xs text-ink/55">Processing video…</span>;
 
   return (
     <div>
@@ -49,7 +50,9 @@ export function LessonUploader({ courseId, lesson }) {
         {lesson.videoStatus === "ERRORED" ? "Retry Upload" : "Upload Video"}
         <input type="file" accept="video/*" className="sr-only" onChange={handleFile} />
       </label>
-      {lesson.videoStatus === "ERRORED" && !error && <p className="mt-1 text-xs text-burgundy">Processing failed.</p>}
+      {lesson.videoStatus === "ERRORED" && !error && (
+        <p className="mt-1 text-xs text-burgundy">Processing failed.</p>
+      )}
       {error && <p className="mt-1 text-xs text-burgundy">{error}</p>}
     </div>
   );

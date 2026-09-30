@@ -34,7 +34,9 @@ export function CourseReviews({ slug, viewer }) {
 
       {viewer?.enrolled && <ReviewForm slug={slug} existing={viewer.review} />}
       {viewer && !viewer.enrolled && (
-        <p className="text-xs text-gold-pale/50">Only students who&apos;ve purchased this course can leave a review.</p>
+        <p className="text-xs text-gold-pale/50">
+          Only students who&apos;ve purchased this course can leave a review.
+        </p>
       )}
     </div>
   );
@@ -54,8 +56,19 @@ function ReviewForm({ slug, existing }) {
       <h3 className="font-display text-base">{existing ? "Update Your Review" : "Write a Review"}</h3>
       {submit.isSuccess && <Alert tone="success">Thanks — your review has been saved.</Alert>}
       <ErrorAlert error={submit.error} />
-      <SelectField label="Rating" name="rating" defaultValue={existing?.rating ?? 5} options={RATING_OPTIONS} />
-      <TextAreaField label="Comment (optional)" name="comment" rows={3} defaultValue={existing?.comment ?? ""} maxLength={2000} />
+      <SelectField
+        label="Rating"
+        name="rating"
+        defaultValue={existing?.rating ?? 5}
+        options={RATING_OPTIONS}
+      />
+      <TextAreaField
+        label="Comment (optional)"
+        name="comment"
+        rows={3}
+        defaultValue={existing?.comment ?? ""}
+        maxLength={2000}
+      />
       <button
         type="submit"
         disabled={submit.isPending}

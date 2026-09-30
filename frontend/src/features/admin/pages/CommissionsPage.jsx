@@ -27,8 +27,8 @@ export default function CommissionsPage() {
             {({ ratePercent }) => (
               <>
                 <p className="mb-4 text-sm text-ink/70">
-                  Current rate: <strong className="text-burgundy">{ratePercent}%</strong>. This only applies to
-                  purchases made from now on — past sales keep the rate they were charged at.
+                  Current rate: <strong className="text-burgundy">{ratePercent}%</strong>. This only applies
+                  to purchases made from now on — past sales keep the rate they were charged at.
                 </p>
                 <form key={ratePercent} onSubmit={handleSubmit} className="flex items-end gap-3">
                   <TextField

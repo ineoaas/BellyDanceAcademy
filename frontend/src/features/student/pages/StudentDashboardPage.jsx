@@ -60,7 +60,9 @@ export default function StudentDashboardPage() {
                     </Cell>
                     <Cell className="text-right">
                       {enrollment.resumeLessonId ? (
-                        <ActionButton to={`/courses/${enrollment.courseSlug}/watch/${enrollment.resumeLessonId}`}>
+                        <ActionButton
+                          to={`/courses/${enrollment.courseSlug}/watch/${enrollment.resumeLessonId}`}
+                        >
                           {enrollment.started ? "Continue" : "Start Course"}
                         </ActionButton>
                       ) : (

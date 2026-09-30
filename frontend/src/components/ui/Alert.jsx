@@ -7,7 +7,10 @@ const TONES = {
 export function Alert({ tone = "info", className = "", children }) {
   if (!children) return null;
   return (
-    <p role={tone === "error" ? "alert" : "status"} className={`px-4 py-3 text-sm ${TONES[tone]} ${className}`}>
+    <p
+      role={tone === "error" ? "alert" : "status"}
+      className={`px-4 py-3 text-sm ${TONES[tone]} ${className}`}
+    >
       {children}
     </p>
   );

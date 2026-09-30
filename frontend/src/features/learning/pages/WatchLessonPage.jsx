@@ -57,7 +57,11 @@ export default function WatchLessonPage() {
             const label = (
               <>
                 {item.position}. {item.title}
-                {item.completed && <span className="ml-1 text-gold" aria-label="completed">✓</span>}
+                {item.completed && (
+                  <span className="ml-1 text-gold" aria-label="completed">
+                    ✓
+                  </span>
+                )}
               </>
             );
             if (!item.watchable) {

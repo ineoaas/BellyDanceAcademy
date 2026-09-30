@@ -23,7 +23,10 @@ export default function ManageLessonsPage() {
 
   return (
     <>
-      <Link to="/instructor" className="text-xs tracking-widest text-burgundy/70 uppercase hover:text-burgundy">
+      <Link
+        to="/instructor"
+        className="text-xs tracking-widest text-burgundy/70 uppercase hover:text-burgundy"
+      >
         ← Back to Dashboard
       </Link>
       <AsyncContent query={course}>
@@ -32,7 +35,9 @@ export default function ManageLessonsPage() {
             <PageHeader
               eyebrow="Manage Lessons"
               title={data.title}
-              description={data.status === "PENDING" ? "Awaiting admin review — add lessons while you wait." : undefined}
+              description={
+                data.status === "PENDING" ? "Awaiting admin review — add lessons while you wait." : undefined
+              }
               actions={
                 <>
                   <StatusBadge status={data.status} />
@@ -115,7 +120,13 @@ function AddLessonPanel({ courseId }) {
     <Panel title="Add Lesson">
       <form onSubmit={handleSubmit} className="flex max-w-sm flex-col gap-3">
         <ErrorAlert error={add.error} />
-        <TextField label="Lesson title" name="title" required maxLength={150} error={fieldError(add.error, "title")} />
+        <TextField
+          label="Lesson title"
+          name="title"
+          required
+          maxLength={150}
+          error={fieldError(add.error, "title")}
+        />
         <CheckboxField name="preview" label="Playable as a free preview" />
         <ActionButton type="submit" variant="solid" className="self-start px-5 py-3" disabled={add.isPending}>
           Add Lesson

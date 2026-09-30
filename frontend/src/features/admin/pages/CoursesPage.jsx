@@ -1,4 +1,14 @@
-import { ActionButton, ActionsCell, AsyncContent, Cell, ErrorAlert, PageHeader, Panel, Row, Table } from "@/components/ui";
+import {
+  ActionButton,
+  ActionsCell,
+  AsyncContent,
+  Cell,
+  ErrorAlert,
+  PageHeader,
+  Panel,
+  Row,
+  Table,
+} from "@/components/ui";
 import { catalogKeys } from "@/features/catalog/hooks";
 import { formatDate, formatPrice } from "@/lib/format";
 import { adminApi } from "../api";

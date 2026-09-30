@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write \"src/**/*.{js,jsx,css}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,css}\"",
     "test": "vitest run",
     "test:watch": "vitest"
   },

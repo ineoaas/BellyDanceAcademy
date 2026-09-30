@@ -8,7 +8,9 @@ import { SESSION_KEY } from "@/features/auth/hooks";
  * Pass `user` to start signed in (or null for a guest).
  */
 export function renderRoutes(routes, { path = "/", user } = {}) {
-  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  });
   if (user !== undefined) queryClient.setQueryData(SESSION_KEY, { user });
   const router = createMemoryRouter(routes, { initialEntries: [path] });
   return {

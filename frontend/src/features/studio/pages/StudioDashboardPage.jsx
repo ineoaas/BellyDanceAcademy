@@ -73,7 +73,12 @@ function StripeSetup({ stripe }) {
           : "Payouts for your courses run through Stripe. Connect an account to start selling and get paid — course revenue and payout history will show up here once you do."}
       </p>
       <ErrorAlert error={onboarding.error} className="mb-4" />
-      <ActionButton variant="solid" className="px-5 py-3" disabled={onboarding.isPending} onClick={() => onboarding.mutate()}>
+      <ActionButton
+        variant="solid"
+        className="px-5 py-3"
+        disabled={onboarding.isPending}
+        onClick={() => onboarding.mutate()}
+      >
         {started ? "Finish Stripe Setup" : "Connect with Stripe"}
       </ActionButton>
     </Panel>
@@ -96,7 +101,11 @@ function CoursesPanel({ courses }) {
           {courses.map((course) => (
             <Row key={course.courseId}>
               <Cell className="font-medium">
-                {course.status === "LIVE" ? <Link to={`/courses/${course.slug}`}>{course.title}</Link> : course.title}
+                {course.status === "LIVE" ? (
+                  <Link to={`/courses/${course.slug}`}>{course.title}</Link>
+                ) : (
+                  course.title
+                )}
               </Cell>
               <Cell>
                 <StatusBadge status={course.status} />

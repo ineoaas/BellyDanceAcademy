@@ -29,7 +29,9 @@ describe("CourseCard", () => {
   });
 
   it("shows the rating once there are reviews", () => {
-    renderRoutes([{ path: "/", element: <CourseCard course={{ ...course, averageRating: 4.4, reviewCount: 3 }} /> }]);
+    renderRoutes([
+      { path: "/", element: <CourseCard course={{ ...course, averageRating: 4.4, reviewCount: 3 }} /> },
+    ]);
 
     expect(screen.getByLabelText("Rated 4.4 out of 5")).toHaveTextContent("★★★★☆");
   });

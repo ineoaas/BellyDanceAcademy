@@ -16,8 +16,21 @@ export function LoginForm({ onSignedIn }) {
     <>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <ErrorAlert error={login.error} />
-        <TextField label="Email" name="email" type="email" required autoComplete="email" placeholder="you@example.com" />
-        <TextField label="Password" name="password" type="password" required autoComplete="current-password" />
+        <TextField
+          label="Email"
+          name="email"
+          type="email"
+          required
+          autoComplete="email"
+          placeholder="you@example.com"
+        />
+        <TextField
+          label="Password"
+          name="password"
+          type="password"
+          required
+          autoComplete="current-password"
+        />
         <Button type="submit" className="mt-2 w-full" disabled={login.isPending}>
           {login.isPending ? "Logging in…" : "Log In"}
         </Button>

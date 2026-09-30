@@ -22,7 +22,14 @@ export default function ForgotPasswordPage() {
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <ErrorAlert error={requestReset.error} />
-          <TextField label="Email" name="email" type="email" required autoComplete="email" placeholder="you@example.com" />
+          <TextField
+            label="Email"
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+            placeholder="you@example.com"
+          />
           <Button type="submit" className="mt-2 w-full" disabled={requestReset.isPending}>
             Send Reset Link
           </Button>

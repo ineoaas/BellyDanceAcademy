@@ -1,5 +1,14 @@
 import { Link } from "react-router";
-import { ActionButton, ActionsCell, AsyncContent, Cell, PageHeader, Panel, Row, Table } from "@/components/ui";
+import {
+  ActionButton,
+  ActionsCell,
+  AsyncContent,
+  Cell,
+  PageHeader,
+  Panel,
+  Row,
+  Table,
+} from "@/components/ui";
 import { formatPrice } from "@/lib/format";
 import { useSetWishlisted, useWishlist } from "../hooks";
 

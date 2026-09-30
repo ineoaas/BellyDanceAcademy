@@ -7,7 +7,11 @@ export const instructorKeys = {
 };
 
 export function useInstructors() {
-  return useQuery({ queryKey: instructorKeys.all, queryFn: () => http.get("/instructors"), staleTime: 5 * 60_000 });
+  return useQuery({
+    queryKey: instructorKeys.all,
+    queryFn: () => http.get("/instructors"),
+    staleTime: 5 * 60_000,
+  });
 }
 
 export function useInstructorPage(slug) {

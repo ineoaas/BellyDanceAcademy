@@ -19,9 +19,9 @@ export default function AboutPage() {
   return (
     <main className="flex-1">
       <PageHero eyebrow="About Us" title="An academy built by dancers, for dancers">
-        We believe the best Oriental dance instruction in the world is scattered across studios most people will
-        never get to visit. Our job is to bring it online — without losing what makes it worth learning in the first
-        place.
+        We believe the best Oriental dance instruction in the world is scattered across studios most people
+        will never get to visit. Our job is to bring it online — without losing what makes it worth learning
+        in the first place.
       </PageHero>
 
       <section className="py-14">

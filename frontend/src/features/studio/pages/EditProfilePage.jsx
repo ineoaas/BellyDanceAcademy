@@ -1,4 +1,14 @@
-import { ActionButton, Alert, AsyncContent, Button, ErrorAlert, PageHeader, Panel, TextAreaField, TextField } from "@/components/ui";
+import {
+  ActionButton,
+  Alert,
+  AsyncContent,
+  Button,
+  ErrorAlert,
+  PageHeader,
+  Panel,
+  TextAreaField,
+  TextField,
+} from "@/components/ui";
 import { formValues } from "@/lib/forms";
 import { useInstructorProfile, useSaveInstructorProfile } from "../hooks";
 
@@ -19,7 +29,11 @@ export default function EditProfilePage() {
           <PageHeader
             eyebrow="Profile"
             title="Edit Your Instructor Profile"
-            actions={existing && <ActionButton to={`/instructors/${existing.slug}`}>View Public Profile</ActionButton>}
+            actions={
+              existing && (
+                <ActionButton to={`/instructors/${existing.slug}`}>View Public Profile</ActionButton>
+              )
+            }
           />
           <div className="max-w-lg">
             {save.isSuccess && (
@@ -35,7 +49,13 @@ export default function EditProfilePage() {
             <Panel>
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <ErrorAlert error={save.error} />
-                <TextField label="City" name="city" maxLength={120} placeholder="Cairo, Egypt" defaultValue={existing?.city} />
+                <TextField
+                  label="City"
+                  name="city"
+                  maxLength={120}
+                  placeholder="Cairo, Egypt"
+                  defaultValue={existing?.city}
+                />
                 <TextField
                   label="Credentials"
                   name="credentials"

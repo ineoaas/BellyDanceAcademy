@@ -42,7 +42,9 @@ describe("http", () => {
   });
 
   it("builds query strings without empty values", () => {
-    expect(toQueryString({ q: "veil", level: "", sort: undefined, minPriceCents: 0 })).toBe("?q=veil&minPriceCents=0");
+    expect(toQueryString({ q: "veil", level: "", sort: undefined, minPriceCents: 0 })).toBe(
+      "?q=veil&minPriceCents=0",
+    );
     expect(toQueryString({})).toBe("");
   });
 });

@@ -14,13 +14,16 @@ export const adminKeys = {
 };
 
 export const useAdminOverview = () => useQuery({ queryKey: adminKeys.overview, queryFn: adminApi.overview });
-export const useApplications = () => useQuery({ queryKey: adminKeys.applications, queryFn: adminApi.applications });
-export const usePendingCourses = () => useQuery({ queryKey: adminKeys.pendingCourses, queryFn: adminApi.pendingCourses });
+export const useApplications = () =>
+  useQuery({ queryKey: adminKeys.applications, queryFn: adminApi.applications });
+export const usePendingCourses = () =>
+  useQuery({ queryKey: adminKeys.pendingCourses, queryFn: adminApi.pendingCourses });
 export const useModeratedReviews = () => useQuery({ queryKey: adminKeys.reviews, queryFn: adminApi.reviews });
 export const useUsers = () => useQuery({ queryKey: adminKeys.users, queryFn: adminApi.users });
 export const useCommission = () => useQuery({ queryKey: adminKeys.commission, queryFn: adminApi.commission });
 export const usePayoutLedger = () => useQuery({ queryKey: adminKeys.payouts, queryFn: adminApi.payouts });
-export const useAllAnnouncements = () => useQuery({ queryKey: announcementKeys.all, queryFn: adminApi.announcements });
+export const useAllAnnouncements = () =>
+  useQuery({ queryKey: announcementKeys.all, queryFn: adminApi.announcements });
 
 /**
  * Admin actions ripple across the site (badges, catalog, banner), so every

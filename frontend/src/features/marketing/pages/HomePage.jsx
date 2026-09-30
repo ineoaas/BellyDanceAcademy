@@ -15,8 +15,16 @@ const GALLERY = [
 
 const STEPS = [
   { numeral: "I", title: "Choose a course", text: "Preview a free lesson before you commit, every time." },
-  { numeral: "II", title: "Pay once, own it", text: "Card, Apple Pay or Google Pay. Lifetime access, no subscription." },
-  { numeral: "III", title: "Learn at your count", text: "Track your progress and pick up right where you stopped." },
+  {
+    numeral: "II",
+    title: "Pay once, own it",
+    text: "Card, Apple Pay or Google Pay. Lifetime access, no subscription.",
+  },
+  {
+    numeral: "III",
+    title: "Learn at your count",
+    text: "Track your progress and pick up right where you stopped.",
+  },
 ];
 
 export default function HomePage() {
@@ -34,12 +42,12 @@ export default function HomePage() {
           <div>
             <span className="eyebrow text-gold">Online Academy · Oriental Dance</span>
             <h1 className="mt-4 font-display text-4xl leading-tight md:text-5xl">
-              The art of <span className="font-script text-5xl text-gold-light md:text-6xl">Raqs Sharqi</span>, taught
-              with devotion.
+              The art of <span className="font-script text-5xl text-gold-light md:text-6xl">Raqs Sharqi</span>
+              , taught with devotion.
             </h1>
             <p className="mt-5 mb-7 max-w-md text-gold-pale/80">
-              Study technique, choreography and stage presence with instructors who&apos;ve performed the stages
-              you&apos;re training for. Preview any lesson before you buy — own it for good.
+              Study technique, choreography and stage presence with instructors who&apos;ve performed the
+              stages you&apos;re training for. Preview any lesson before you buy — own it for good.
             </p>
             <div className="flex flex-wrap gap-4">
               <Button to="/courses">Browse Courses</Button>
@@ -71,7 +79,10 @@ export default function HomePage() {
           <div className="mx-auto max-w-5xl px-6">
             <SectionHeading eyebrow="Featured" title="Where most dancers begin their week" />
             <div className="grid gap-6 md:grid-cols-[1.3fr_1fr]">
-              <Link to={`/courses/${featured.slug}`} className="grid border border-gold/40 bg-ivory sm:grid-cols-2">
+              <Link
+                to={`/courses/${featured.slug}`}
+                className="grid border border-gold/40 bg-ivory sm:grid-cols-2"
+              >
                 <div className="flex min-h-[220px] items-center justify-center bg-burgundy-deep">
                   <span aria-hidden="true" className="font-display text-7xl text-gold/40">
                     {initial(featured.title)}
@@ -85,8 +96,12 @@ export default function HomePage() {
                   <h3 className="mb-2 font-display text-xl">{featured.title}</h3>
                   <p className="mb-6 text-sm text-ink/60">{featured.description}</p>
                   <div className="mt-auto flex items-center justify-between">
-                    <span className="font-display text-2xl text-burgundy">{formatPrice(featured.priceCents)}</span>
-                    <span className="border border-gold px-4 py-2 text-xs tracking-widest uppercase">View Course</span>
+                    <span className="font-display text-2xl text-burgundy">
+                      {formatPrice(featured.priceCents)}
+                    </span>
+                    <span className="border border-gold px-4 py-2 text-xs tracking-widest uppercase">
+                      View Course
+                    </span>
                   </div>
                 </div>
               </Link>
@@ -114,7 +129,11 @@ export default function HomePage() {
 
       <section className="bg-burgundy-deep py-14 text-ivory">
         <div className="mx-auto max-w-5xl px-6">
-          <SectionHeading eyebrow="How It Works" title="From your first preview to your first performance" light />
+          <SectionHeading
+            eyebrow="How It Works"
+            title="From your first preview to your first performance"
+            light
+          />
           <ol className="grid gap-10 md:grid-cols-3">
             {STEPS.map((step) => (
               <li key={step.numeral} className="text-center">
@@ -160,7 +179,11 @@ export default function HomePage() {
                   to={`/instructors/${instructor.slug}`}
                   className={`w-40 flex-none text-center ${index % 2 === 1 ? "mt-6" : ""}`}
                 >
-                  <Medallion text={instructor.name} size="xl" className="mx-auto mb-3 border border-gold/50 bg-cream text-burgundy" />
+                  <Medallion
+                    text={instructor.name}
+                    size="xl"
+                    className="mx-auto mb-3 border border-gold/50 bg-cream text-burgundy"
+                  />
                   <strong className="block font-display text-base">{instructor.name}</strong>
                   <span className="text-sm text-ink/60">{instructor.city}</span>
                 </Link>
@@ -177,7 +200,9 @@ export default function HomePage() {
               &ldquo;
             </span>
             <blockquote className="mb-3 font-display text-xl italic">{featuredReview.comment}</blockquote>
-            <figcaption className="text-xs tracking-widest text-ink/60 uppercase">— {featuredReview.studentName}</figcaption>
+            <figcaption className="text-xs tracking-widest text-ink/60 uppercase">
+              — {featuredReview.studentName}
+            </figcaption>
           </figure>
         </section>
       )}
@@ -192,7 +217,9 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-burgundy-deep/80" />
         <div className="relative mx-auto max-w-lg px-6">
           <span className="eyebrow text-gold">Become an Instructor</span>
-          <h2 className="mt-2 mb-3 font-display text-2xl md:text-3xl">Turn your choreography into a course of its own</h2>
+          <h2 className="mt-2 mb-3 font-display text-2xl md:text-3xl">
+            Turn your choreography into a course of its own
+          </h2>
           <p className="mb-7 text-gold-pale/80">
             Upload your lessons, set your price. We handle checkout, access and payout automatically.
           </p>

@@ -19,7 +19,9 @@ export function Table({ columns, children }) {
 }
 
 export function Row({ className = "", children }) {
-  return <tr className={`border-b border-dotted border-gold/30 last:border-none ${className}`}>{children}</tr>;
+  return (
+    <tr className={`border-b border-dotted border-gold/30 last:border-none ${className}`}>{children}</tr>
+  );
 }
 
 export function Cell({ className = "", children }) {

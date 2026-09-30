@@ -24,11 +24,16 @@ export default function CourseDetailPage() {
 
   if (detail.isPending) return <LoadingState />;
   if (detail.isError) {
-    return detail.error.status === 404 ? <NotFoundPage /> : <ErrorState error={detail.error} onRetry={detail.refetch} />;
+    return detail.error.status === 404 ? (
+      <NotFoundPage />
+    ) : (
+      <ErrorState error={detail.error} onRetry={detail.refetch} />
+    );
   }
 
   const { course, about, instructorSlug, curriculum, viewer } = detail.data;
-  const notice = params.get("checkout") === "cancelled" ? NOTICES.cancelled : params.has("locked") ? NOTICES.locked : null;
+  const notice =
+    params.get("checkout") === "cancelled" ? NOTICES.cancelled : params.has("locked") ? NOTICES.locked : null;
 
   return (
     <main className="flex flex-1 flex-col">
@@ -64,8 +69,8 @@ export default function CourseDetailPage() {
                 <span>
                   {course.reviewCount > 0 ? (
                     <>
-                      <strong className="text-gold-light">{stars(course.averageRating)}</strong> {course.averageRating} ·{" "}
-                      {pluralize(course.reviewCount, "review")}
+                      <strong className="text-gold-light">{stars(course.averageRating)}</strong>{" "}
+                      {course.averageRating} · {pluralize(course.reviewCount, "review")}
                     </>
                   ) : (
                     "No reviews yet"
@@ -90,7 +95,9 @@ export default function CourseDetailPage() {
                     aria-selected={tab === name}
                     onClick={() => setTab(name)}
                     className={`border-b-2 pb-2 text-xs tracking-widest uppercase ${
-                      tab === name ? "border-gold-light text-gold-light" : "border-transparent text-gold-pale/55"
+                      tab === name
+                        ? "border-gold-light text-gold-light"
+                        : "border-transparent text-gold-pale/55"
                     }`}
                   >
                     {name}

@@ -7,5 +7,6 @@ export const authApi = {
   registerStudent: (details) => http.post("/auth/register", details),
   applyAsInstructor: (details) => http.post("/auth/instructor-applications", details),
   requestPasswordReset: (email) => http.post("/auth/password-reset", { email }),
-  confirmPasswordReset: ({ token, password }) => http.post("/auth/password-reset/confirm", { token, password }),
+  confirmPasswordReset: ({ token, password }) =>
+    http.post("/auth/password-reset/confirm", { token, password }),
 };

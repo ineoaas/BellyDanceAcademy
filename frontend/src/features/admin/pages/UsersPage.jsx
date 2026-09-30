@@ -1,4 +1,16 @@
-import { ActionButton, ActionsCell, Alert, AsyncContent, Cell, ErrorAlert, PageHeader, Panel, Row, StatusBadge, Table } from "@/components/ui";
+import {
+  ActionButton,
+  ActionsCell,
+  Alert,
+  AsyncContent,
+  Cell,
+  ErrorAlert,
+  PageHeader,
+  Panel,
+  Row,
+  StatusBadge,
+  Table,
+} from "@/components/ui";
 import { useCurrentUser } from "@/features/auth/hooks";
 import { ROLE_LABELS } from "@/lib/labels";
 import { adminApi } from "../api";

@@ -77,7 +77,8 @@ export function useStudioLessons(courseId) {
   return useQuery({
     queryKey: studioKeys.lessons(courseId),
     queryFn: () => studioApi.lessons(courseId),
-    refetchInterval: (query) => (query.state.data?.some((lesson) => IN_FLIGHT.has(lesson.videoStatus)) ? 5000 : false),
+    refetchInterval: (query) =>
+      query.state.data?.some((lesson) => IN_FLIGHT.has(lesson.videoStatus)) ? 5000 : false,
   });
 }
 

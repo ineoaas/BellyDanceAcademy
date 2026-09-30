@@ -32,7 +32,13 @@ function ProfileForm() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         {update.isSuccess && <Alert tone="success">Profile updated.</Alert>}
         <ErrorAlert error={update.error} />
-        <TextField label="Name" name="name" defaultValue={user.name} required error={fieldError(update.error, "name")} />
+        <TextField
+          label="Name"
+          name="name"
+          defaultValue={user.name}
+          required
+          error={fieldError(update.error, "name")}
+        />
         <TextField
           label="Email"
           name="email"
@@ -41,7 +47,12 @@ function ProfileForm() {
           required
           error={fieldError(update.error, "email")}
         />
-        <ActionButton type="submit" variant="solid" className="mt-1 self-start px-5 py-3" disabled={update.isPending}>
+        <ActionButton
+          type="submit"
+          variant="solid"
+          className="mt-1 self-start px-5 py-3"
+          disabled={update.isPending}
+        >
           Save Changes
         </ActionButton>
       </form>
@@ -68,7 +79,13 @@ function PasswordForm() {
         {change.isSuccess && <Alert tone="success">Password changed.</Alert>}
         {mismatch && <Alert tone="error">New passwords don&apos;t match.</Alert>}
         <ErrorAlert error={change.error} />
-        <TextField label="Current password" name="currentPassword" type="password" required autoComplete="current-password" />
+        <TextField
+          label="Current password"
+          name="currentPassword"
+          type="password"
+          required
+          autoComplete="current-password"
+        />
         <TextField
           label="New password"
           name="newPassword"
@@ -86,7 +103,12 @@ function PasswordForm() {
           minLength={MIN_PASSWORD_LENGTH}
           autoComplete="new-password"
         />
-        <ActionButton type="submit" variant="solid" className="mt-1 self-start px-5 py-3" disabled={change.isPending}>
+        <ActionButton
+          type="submit"
+          variant="solid"
+          className="mt-1 self-start px-5 py-3"
+          disabled={change.isPending}
+        >
           Change Password
         </ActionButton>
       </form>

@@ -55,7 +55,9 @@ export function PurchasePanel({ course, viewer, notice }) {
               type="button"
               disabled={setWishlisted.isPending}
               onClick={() =>
-                asStudent(() => setWishlisted.mutate({ courseId: course.id, wishlisted: !viewer?.wishlisted }))
+                asStudent(() =>
+                  setWishlisted.mutate({ courseId: course.id, wishlisted: !viewer?.wishlisted }),
+                )
               }
               className="mt-2 w-full border border-gold px-4 py-2.5 text-xs tracking-widest uppercase"
             >

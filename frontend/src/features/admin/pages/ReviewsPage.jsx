@@ -1,5 +1,16 @@
 import { Link } from "react-router";
-import { ActionButton, ActionsCell, AsyncContent, Cell, ErrorAlert, PageHeader, Panel, Row, StatusBadge, Table } from "@/components/ui";
+import {
+  ActionButton,
+  ActionsCell,
+  AsyncContent,
+  Cell,
+  ErrorAlert,
+  PageHeader,
+  Panel,
+  Row,
+  StatusBadge,
+  Table,
+} from "@/components/ui";
 import { catalogKeys } from "@/features/catalog/hooks";
 import { adminApi } from "../api";
 import { useAdminAction, useModeratedReviews } from "../hooks";
@@ -39,7 +50,9 @@ export default function ReviewsPage() {
                       <ActionsCell>
                         <ActionButton
                           disabled={setStatus.isPending}
-                          onClick={() => setStatus.mutate({ id: review.id, status: visible ? "HIDDEN" : "VISIBLE" })}
+                          onClick={() =>
+                            setStatus.mutate({ id: review.id, status: visible ? "HIDDEN" : "VISIBLE" })
+                          }
                         >
                           {visible ? "Hide" : "Unhide"}
                         </ActionButton>

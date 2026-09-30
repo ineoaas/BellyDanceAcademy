@@ -4,6 +4,7 @@
  */
 export function safeRedirectPath(candidate, fallback = "/") {
   if (typeof candidate !== "string") return fallback;
-  if (!candidate.startsWith("/") || candidate.startsWith("//") || candidate.startsWith("/\\")) return fallback;
+  if (!candidate.startsWith("/") || candidate.startsWith("//") || candidate.startsWith("/\\"))
+    return fallback;
   return candidate;
 }

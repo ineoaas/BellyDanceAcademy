@@ -10,7 +10,14 @@ import { MIN_PASSWORD_LENGTH } from "../passwords";
 export function RegistrationFields({ error }) {
   return (
     <>
-      <TextField label="Name" name="name" required autoComplete="name" placeholder="Your name" error={fieldError(error, "name")} />
+      <TextField
+        label="Name"
+        name="name"
+        required
+        autoComplete="name"
+        placeholder="Your name"
+        error={fieldError(error, "name")}
+      />
       <TextField
         label="Email"
         name="email"

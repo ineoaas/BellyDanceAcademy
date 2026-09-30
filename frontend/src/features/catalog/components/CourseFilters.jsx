@@ -55,7 +55,12 @@ export function CourseFilters() {
           </option>
         ))}
       </select>
-      <select name="instructor" aria-label="Instructor" defaultValue={params.get("instructor") ?? ""} className={CONTROL}>
+      <select
+        name="instructor"
+        aria-label="Instructor"
+        defaultValue={params.get("instructor") ?? ""}
+        className={CONTROL}
+      >
         <option value="">All Instructors</option>
         {instructors.map((instructor) => (
           <option key={instructor.userId} value={instructor.userId}>
@@ -88,7 +93,10 @@ export function CourseFilters() {
           </option>
         ))}
       </select>
-      <button type="submit" className="bg-burgundy-deep px-5 py-2 text-xs tracking-widest text-gold-pale uppercase">
+      <button
+        type="submit"
+        className="bg-burgundy-deep px-5 py-2 text-xs tracking-widest text-gold-pale uppercase"
+      >
         Apply
       </button>
       <button

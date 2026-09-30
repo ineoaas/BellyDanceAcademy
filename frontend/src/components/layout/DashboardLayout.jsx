@@ -15,7 +15,11 @@ export function DashboardLayout({ links }) {
     <main className="grid flex-1 md:grid-cols-[220px_1fr]">
       <aside className="bg-burgundy-dark p-6 text-gold-pale/80">
         <div className="mb-4 flex items-center gap-3 border-b border-gold/25 pb-4">
-          <Medallion text={user.name} size="sm" className="border border-gold bg-burgundy-deep text-gold-light" />
+          <Medallion
+            text={user.name}
+            size="sm"
+            className="border border-gold bg-burgundy-deep text-gold-light"
+          />
           <div>
             <strong className="block font-display text-sm text-ivory">{user.name}</strong>
             <span className="text-[0.65rem] tracking-widest uppercase">{ROLE_LABELS[user.role]}</span>
