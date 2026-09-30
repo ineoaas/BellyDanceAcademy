@@ -1,0 +1,13 @@
+# Tests never talk to real third parties, whatever is in a developer's .env.
+app:
+  mail:
+    resend-api-key: ""
+  stripe:
+    secret-key: ""
+    webhook-secret: ""
+  mux:
+    token-id: ""
+    token-secret: ""
+    signing-key-id: ""
+    signing-private-key: ""
+    webhook-secret: ""

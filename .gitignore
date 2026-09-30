@@ -1,19 +1,12 @@
-# dependencies
-node_modules/
-
-# next.js build output
-.next/
-out/
-
-# local database (added once we wire up SQLite in FR-7.1)
-data/
-*.db
-*.db-journal
-
-# env files
+# Secrets — copy .env.example to .env
 .env
-.env.local
-.env*.local
+.env.*
+!.env.example
 
-# editor/OS
+# Legacy SQLite database from the Next.js version
+data/
+
+# Editor/OS
 .DS_Store
+.idea/
+.vscode/
