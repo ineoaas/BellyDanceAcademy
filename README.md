@@ -44,6 +44,27 @@ cd frontend && npm test        # Vitest + Testing Library
 cd frontend && npm run lint
 ```
 
+## Deploying
+
+`docker-compose.prod.yml` runs the whole stack on one server: PostgreSQL,
+the API (`prod` profile), nginx serving the SPA, and Caddy in front for
+automatic HTTPS. Only Caddy's ports 80/443 are exposed.
+
+1. Point your domain's DNS at the server and install Docker.
+2. Copy `.env.example` to `.env` and fill in `DOMAIN`, `POSTGRES_PASSWORD`,
+   `BOOTSTRAP_ADMIN_*` and the live Stripe, Mux and Resend keys (with
+   `MAIL_FROM` on a domain verified in Resend).
+3. `docker compose -f docker-compose.prod.yml up -d --build`
+4. Sign in as the bootstrap admin, change the password, then remove
+   `BOOTSTRAP_ADMIN_PASSWORD` from `.env`.
+5. Register the webhooks: `https://<domain>/api/webhooks/stripe` in Stripe
+   and `https://<domain>/api/webhooks/mux` in Mux.
+6. Schedule `deploy/backup-db.sh` (nightly cron) and copy `backups/` off the server.
+
+The `prod` profile enables `Secure` cookies and turns off the API docs.
+Login, sign-up, password reset and the contact form are rate limited per
+client IP.
+
 ## Architecture
 
 ```

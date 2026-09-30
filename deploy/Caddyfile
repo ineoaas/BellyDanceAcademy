@@ -1,0 +1,6 @@
+# Caddy obtains and renews the TLS certificate for $DOMAIN automatically.
+# It replaces any client-supplied X-Forwarded-For with the real client IP.
+{$DOMAIN} {
+	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+	reverse_proxy frontend:80
+}

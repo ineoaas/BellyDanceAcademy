@@ -10,3 +10,6 @@ data/
 .DS_Store
 .idea/
 .vscode/
+
+# Database dumps from deploy/backup-db.sh
+backups/
